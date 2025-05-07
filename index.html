@@ -20,10 +20,41 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
-    </style>
+    
+nav {
+    background-color: #1f1f2e;
+    text-align: center;
+}
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.nav-menu li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+.nav-menu li a:hover {
+    text-decoration: underline;
+}
+
+</style>
 </head>
 <body>
     <header>
+    <nav>
+        <ul class="nav-menu">
+            <li><a href="#goals">Goals</a></li>
+            <li><a href="#tournaments">Tournaments</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#schedule">Schedule</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
         <div class="header-container">
             <img src="kirill-photo.jpg" alt="Kirill holding trophy">
             <div>
@@ -33,7 +64,7 @@
         </div>
     </header>
     <main>
-        <section>
+        <section id="goals">
             <h2>🎯 Current Goals</h2>
             <ul>
                 <li>Reach 1900 FQE rating by end of 2026</li>
@@ -41,16 +72,16 @@
                 <li>Play at least 20 tournaments in 2025</li>
             </ul>
         </section>
-        <section>
+        <section id="tournaments">
             <h2>📅 Upcoming Tournaments</h2>
             <p>🏁 Coming soon: Full calendar and details</p>
         </section>
-        <section>
+        <section id="results">
             <h2>✅ Past Results</h2>
             <p>✔️ February 2025: 3rd place at Brossard Rapid (U1400)</p>
             <p>✔️ March 2025: 5/7 points at Longueuil Classic</p>
         </section>
-        <section>
+        <section id="schedule">
             <h2>📅 2025 Tournament Schedule</h2>
             <table>
                 <tr><th>Date</th><th>Tournament</th><th>Location</th></tr>
@@ -62,7 +93,11 @@
                 <tr><td>11–14 mai 2025</td><td><a href="https://capablancachess.com" target="_blank">Capablanca Chess Camp (Blitz exempté)</a></td><td>Varadero, Cuba</td></tr>
             </table>
         </section>
-    </main>
+    <section id="contact">
+        <h2>📧 Contact</h2>
+        <p>Write to us at: <a href="mailto:anton@example.com">anton@example.com</a></p>
+    </section>
+</main>
     <footer>
         <p>Made with ❤️ by Anton & Kirill | Powered by GitHub Pages</p>
     </footer>
