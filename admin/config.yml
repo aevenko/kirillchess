@@ -7,38 +7,12 @@ media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
 collections:
-  - name: "profile"
-    label: "Profile Page"
-    files:
-      - label: "Kirill's Chess Profile"
-        name: "profile"
-        file: "profile.html"
-        fields:
-          - { label: "Intro Text", name: "body", widget: "markdown" }
-
-  - name: "tournaments"
-    label: "Tournaments Page"
-    files:
-      - label: "Tournament Schedule"
-        name: "tournaments"
-        file: "tournaments.html"
-        fields:
-          - { label: "Tournament Content", name: "body", widget: "markdown" }
-
-  - name: "results"
-    label: "Results Page"
-    files:
-      - label: "Past Results"
-        name: "results"
-        file: "results.html"
-        fields:
-          - { label: "Results Text", name: "body", widget: "markdown" }
-
-  - name: "contact"
-    label: "Contact Page"
-    files:
-      - label: "Contact Info"
-        name: "contact"
-        file: "contact.html"
-        fields:
-          - { label: "Emails", name: "body", widget: "markdown" }
+  - name: "events"
+    label: "Tournaments & Results"
+    folder: "events"
+    create: true
+    fields:
+      - { label: "Event", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Result", name: "result", widget: "string" }
