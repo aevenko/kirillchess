@@ -2,17 +2,43 @@ backend:
   name: git-gateway
   branch: main
 
-media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
 
-site_url: https://www.kirillchess.com
+site_url: https://kirillchess.com
+logo_url: /images/uploads/kirill-logo.png
 
 collections:
-  - name: "profile"
-    label: "Profile Page"
+  - name: "tournaments"
+    label: "Tournaments"
+    folder: "content/tournaments"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime" }
+      - { label: "Location", name: "location", widget: "string" }
+      - { label: "Rating Type", name: "rating_type", widget: "select", options: ["FQE", "CFC", "FIDE"] }
+      - { label: "Result", name: "result", widget: "string", required: false }
+      - { label: "Description", name: "body", widget: "markdown" }
+
+  - name: "goals"
+    label: "Goals"
+    folder: "content/goals"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Goal", name: "title", widget: "string" }
+      - { label: "Target Date", name: "target", widget: "datetime" }
+      - { label: "Completed", name: "completed", widget: "boolean", default: false }
+      - { label: "Details", name: "body", widget: "markdown" }
+
+  - name: "about"
+    label: "About Kirill"
     files:
-      - label: "Kirill’s Chess Profile"
-        name: "profile"
-        file: "profile.html"
+      - label: "Bio"
+        name: "bio"
+        file: "content/about.md"
         fields:
-          - { label: "Intro Text", name: "body", widget: "markdown" }
+          - { label: "Title", name: "title", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown" }
