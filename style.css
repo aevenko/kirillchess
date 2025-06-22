@@ -2,64 +2,48 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: url("../images/background.png") no-repeat center center fixed;
+  background: url('background.jpg') no-repeat center center fixed;
   background-size: cover;
   color: white;
 }
-
 header {
-  text-align: center;
-  padding: 30px;
-  background-color: rgba(0,0,0,0.7);
-}
-
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   background: rgba(0, 0, 0, 0.6);
-  padding: 10px;
+  padding: 1em;
+  text-align: center;
 }
-
-nav a {
+nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+nav ul li {
+  display: inline-block;
+  margin: 0 15px;
+}
+nav ul li a {
   color: white;
   text-decoration: none;
-  padding: 10px 15px;
-  font-weight: bold;
 }
-
-nav a:hover {
-  text-decoration: underline;
+main {
+  padding: 2em;
 }
-
 section {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background-color: rgba(0,0,0,0.5);
-  margin-top: 20px;
-  border-radius: 8px;
+  margin-bottom: 2em;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
-  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
 }
-
+table, th, td {
+  border: 1px solid white;
+}
 th, td {
   padding: 10px;
-  border: 1px solid white;
-  text-align: left;
+  text-align: center;
 }
-
-@media (max-width: 768px) {
-  nav {
-    flex-direction: column;
-  }
-
-  nav a {
-    padding: 10px;
+@media (max-width: 600px) {
+  nav ul li {
     display: block;
+    margin: 10px 0;
   }
 }
