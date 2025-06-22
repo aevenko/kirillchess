@@ -1,45 +1,65 @@
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url("images/your_background.png") no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    text-align: center;
-  }
 
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url("../images/background.png") no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+}
+
+header {
+  text-align: center;
+  padding: 30px;
+  background-color: rgba(0,0,0,0.7);
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+section {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background-color: rgba(0,0,0,0.5);
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid white;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
   nav {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
+    flex-direction: column;
   }
 
   nav a {
-    margin: 0 15px;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
+    padding: 10px;
+    display: block;
   }
-
-  nav a:hover {
-    text-decoration: underline;
-  }
-
-  @media screen and (max-width: 768px) {
-    nav a {
-      display: block;
-      margin: 10px 0;
-    }
-  }
-</style>
-
-<body>
-  <h1>Kirill's Chess Journey</h1>
-  <nav>
-    <a href="#home">Home</a>
-    <a href="#profile">Profile</a>
-    <a href="#tournaments">Tournaments</a>
-    <a href="#results">Results</a>
-    <a href="#contact">Contact</a>
-  </nav>
-  <h2>Welcome to Kirill's Official Chess Site</h2>
-</body>
+}
