@@ -1,56 +1,73 @@
 
 <!DOCTYPE html>
-
-<html lang="fr">
+<html lang="en">
 <head>
-<meta charset="utf-8"/>
-<title>KirillChess</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kirill's Chess Journey</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f2f2f2;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      background-color: #444;
+      padding: 1em;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      text-align: center;
+      padding: 2em;
+    }
+    .background {
+      background: url("images/chess_background.png") no-repeat center center;
+      background-size: cover;
+      height: 300px;
+      width: 100%;
+    }
+    footer {
+      text-align: center;
+      padding: 1em;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-<header>
-<h1>Bienvenue sur le site de Kirill</h1>
-</header>
-<!-- Здесь будет вставлена таблица турниров -->
-
-<section id="tournaments">
-<h2>Tournois de Kirill</h2>
-<table id="tournaments-table">
-<thead>
-<tr>
-<th>Date</th>
-<th>Tournoi</th>
-<th>Cote Avant</th>
-<th>Cote Après</th>
-<th>Ville</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</section>
-<footer>
-<p>© 2025 KirillChess</p>
-</footer>
-
-<script>
-fetch('/content/tournaments/tournaments.json')
-  .then(response => response.json())
-  .then(data => {
-    const tbody = document.querySelector('#tournaments-table tbody');
-    data.forEach(tournoi => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${tournoi.Date}</td>
-        <td>${tournoi.Event}</td>
-        <td>${tournoi.Before}</td>
-        <td>${tournoi.After}</td>
-        <td>${tournoi.City}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  })
-  .catch(error => {
-    console.error('Erreur de chargement des tournois:', error);
-  });
-</script>
+  <header>
+    <h1>Kirill's Chess Journey</h1>
+  </header>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="profile.html">Profile</a>
+    <a href="tournaments.html">Tournaments</a>
+    <a href="results.html">Results</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <div class="background"></div>
+  <main>
+    <h2>Welcome to Kirill's Official Chess Site</h2>
+    <p>Follow Kirill's journey to chess mastery.</p>
+  </main>
+  <footer>
+    &copy; 2025 Kirill Evenko | All rights reserved
+  </footer>
 </body>
 </html>
