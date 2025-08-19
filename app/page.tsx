@@ -1,0 +1,1 @@
+import Home from './(public)/home/page'; export default Home;
