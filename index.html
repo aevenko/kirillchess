@@ -7,44 +7,60 @@
   <link rel="preload" href="kirill.jpg" as="image"/>
   <style>
     :root{
-      --bg:#f4f6f8;
-      --ink:#111827;
-      --muted:#4b5563;
-      --card:#ffffff;
-      --shadow:0 10px 30px rgba(0,0,0,.12);
+      --bg:#f4f6f8; --ink:#111827; --muted:#4b5563;
+      --card:#ffffff; --shadow:0 10px 30px rgba(0,0,0,.12);
       --accent:#0ea5e9;
     }
     *{box-sizing:border-box}
-    html,body{height:100%}
     body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}
     .container{max-width:1100px;margin:auto;padding:24px}
-    .card{
-      background:var(--card); border-radius:24px; box-shadow:var(--shadow);
-      border:1px solid rgba(0,0,0,.06); padding:28px;
+    .card{background:var(--card);border-radius:24px;box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.06);padding:28px}
+    /* --- Nav --- */
+    .nav{
+      position:sticky; top:0; z-index:10;
+      background:rgba(255,255,255,.8); backdrop-filter: blur(8px);
+      border-bottom:1px solid rgba(0,0,0,.08);
     }
-    .hero{
-      display:grid; grid-template-columns: 1.2fr .9fr; gap:24px; align-items:center;
-    }
+    .nav .inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:16px;padding:10px 24px}
+    .brand{font-weight:800}
+    .nav a{color:#0b4a6f;text-decoration:none;padding:8px 10px;border-radius:10px}
+    .nav a:hover{background:#eaf4ff}
+    /* --- Hero --- */
+    .hero{display:grid;grid-template-columns:1.2fr .9fr;gap:24px;align-items:center}
     h1{font-size:34px;margin:0 0 10px}
     .lead{font-size:18px;color:var(--muted);margin:0 0 14px}
     .kpis{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
     .badge{padding:6px 10px;border-radius:999px;background:#eef6ff;border:1px solid #d7ecff;color:#0b4a6f;font-weight:600;font-size:13px}
-    .pic{
-      justify-self:end; width:100%; max-width:420px;
-      border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.2);
-      overflow:hidden; border:1px solid rgba(0,0,0,.06);
-    }
-    .pic img{display:block; width:100%; height:auto}
+    .pic{justify-self:end;width:100%;max-width:420px;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.2);overflow:hidden;border:1px solid rgba(0,0,0,.06)}
+    .pic img{display:block;width:100%;height:auto}
+    /* --- Tables --- */
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.08);text-align:left}
+    .table th{font-size:14px;color:#334155;text-transform:uppercase;letter-spacing:.4px}
+    .section h2{margin:0 0 14px}
     footer{opacity:.65;text-align:center;margin:26px 0 6px;font-size:14px}
     @media (max-width:860px){
-      .hero{grid-template-columns:1fr; gap:16px}
-      .pic{justify-self:stretch; max-width:none}
+      .hero{grid-template-columns:1fr;gap:16px}
+      .pic{justify-self:stretch;max-width:none}
+      .nav .inner{padding:8px 16px}
     }
   </style>
 </head>
 <body>
+  <!-- Top menu -->
+  <div class="nav">
+    <div class="inner">
+      <div class="brand">♟️ KirillChess</div>
+      <div style="display:flex;gap:8px">
+        <a href="#played">Сыгранные турниры</a>
+        <a href="#upcoming">Предстоящие турниры</a>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
-    <section class="card hero">
+    <!-- Hero -->
+    <section class="card hero" style="margin-top:18px">
       <div>
         <h1>Кирилл Евенко</h1>
         <p class="lead">Юный шахматист из Квебека. С каждой партией — всё ближе к вершине.</p>
@@ -55,10 +71,33 @@
           <span class="badge">FQE 1543</span>
         </div>
       </div>
-      <figure class="pic">
-        <img src="kirill.jpg" alt="Кирилл играет в шахматы">
-      </figure>
+      <figure class="pic"><img src="kirill.jpg" alt="Кирилл играет в шахматы"></figure>
     </section>
+
+    <!-- Played tournaments -->
+    <section id="played" class="card section" style="margin-top:18px">
+      <h2>Сыгранные турниры</h2>
+      <table class="table">
+        <thead><tr><th>Дата</th><th>Турнир</th><th>Город</th><th>До</th><th>После</th></tr></thead>
+        <tbody>
+          <tr><td>20.07.2025</td><td>TOURNOI ÉLITE DE CHAMBLY (TEC) 2025</td><td>Chambly</td><td>1253</td><td><b>1435</b></td></tr>
+          <tr><td>11.06.2025</td><td>Open Brossard</td><td>Brossard</td><td>1450</td><td><b>1480</b></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Upcoming tournaments -->
+    <section id="upcoming" class="card section" style="margin-top:18px">
+      <h2>Предстоящие турниры</h2>
+      <table class="table">
+        <thead><tr><th>Дата</th><th>Турнир</th><th>Город</th><th>Контроль</th></tr></thead>
+        <tbody>
+          <tr><td>15.09.2025</td><td>Quebec Junior Open</td><td>Montréal</td><td>Classical</td></tr>
+          <tr><td>10.10.2025</td><td>Autumn Rapid Cup</td><td>Longueuil</td><td>Rapid</td></tr>
+        </tbody>
+      </table>
+    </section>
+
     <footer>© 2025 KirillChess</footer>
   </div>
 </body>
