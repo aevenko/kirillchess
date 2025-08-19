@@ -1,44 +1,65 @@
-
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Kirill Chess</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>KirillChess</title>
+  <link rel="preload" href="kirill.jpg" as="image"/>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #f9f9f9;
+    :root{
+      --bg:#f4f6f8;
+      --ink:#111827;
+      --muted:#4b5563;
+      --card:#ffffff;
+      --shadow:0 10px 30px rgba(0,0,0,.12);
+      --accent:#0ea5e9;
     }
-    .container {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial}
+    .container{max-width:1100px;margin:auto;padding:24px}
+    .card{
+      background:var(--card); border-radius:24px; box-shadow:var(--shadow);
+      border:1px solid rgba(0,0,0,.06); padding:28px;
     }
-    .text {
-      width: 60%;
+    .hero{
+      display:grid; grid-template-columns: 1.2fr .9fr; gap:24px; align-items:center;
     }
-    .photo {
-      width: 35%;
+    h1{font-size:34px;margin:0 0 10px}
+    .lead{font-size:18px;color:var(--muted);margin:0 0 14px}
+    .kpis{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+    .badge{padding:6px 10px;border-radius:999px;background:#eef6ff;border:1px solid #d7ecff;color:#0b4a6f;font-weight:600;font-size:13px}
+    .pic{
+      justify-self:end; width:100%; max-width:420px;
+      border-radius:18px; box-shadow:0 12px 30px rgba(0,0,0,.2);
+      overflow:hidden; border:1px solid rgba(0,0,0,.06);
     }
-    .photo img {
-      max-width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    .pic img{display:block; width:100%; height:auto}
+    footer{opacity:.65;text-align:center;margin:26px 0 6px;font-size:14px}
+    @media (max-width:860px){
+      .hero{grid-template-columns:1fr; gap:16px}
+      .pic{justify-self:stretch; max-width:none}
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="text">
-      <h1>Kirill Evenko</h1>
-      <p>Passionate chess player from Quebec. Always improving, competing and enjoying the beauty of the game.</p>
-      <p>FIDE ID: 2666243 | CFC ID: 187189 | FQE ID: 109477</p>
-      <p>FIDE: 1787 | CFC: 1536 | FQE: 1543</p>
-    </div>
-    <div class="photo">
-      <img src="photo.jpg" alt="Kirill Playing Chess">
-    </div>
+    <section class="card hero">
+      <div>
+        <h1>Кирилл Евенко</h1>
+        <p class="lead">Юный шахматист из Квебека. С каждой партией — всё ближе к вершине.</p>
+        <p>В <b>5 лет</b> папа впервые открыл для Кирилла мир шахмат и показал, как играть — с тех пор эта игра стала частью его жизни. Сегодня Кирилл выступает на турнирах по всему Квебеку и Канаде, растёт в рейтингах и продолжает тренироваться с вдохновением.</p>
+        <div class="kpis">
+          <span class="badge">FIDE 1787</span>
+          <span class="badge">CFC 1536</span>
+          <span class="badge">FQE 1543</span>
+        </div>
+      </div>
+      <figure class="pic">
+        <img src="kirill.jpg" alt="Кирилл играет в шахматы">
+      </figure>
+    </section>
+    <footer>© 2025 KirillChess</footer>
   </div>
 </body>
 </html>
