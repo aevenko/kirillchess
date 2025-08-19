@@ -1,69 +1,44 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8">
   <title>Kirill Chess</title>
-  <link rel="preload" href="assets/bg.svg" as="image"/>
-  <link rel="stylesheet" href="style.css"/>
-  <meta name="description" content="Kirill — young chess player from Québec. Progress, tournaments, goals."/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    .container {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .text {
+      width: 60%;
+    }
+    .photo {
+      width: 35%;
+    }
+    .photo img {
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <nav class="nav">
-      <div class="brand">♟️ KirillChess</div>
-      <div class="menu">
-        <a href="index.html" class="active">Home</a>
-        <a href="tournaments.html">Tournaments</a>
-        <a href="goals.html">Goals</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </nav>
-
-    <section class="hero">
-      <span class="badge">Quebec • CFC 1500 • FQE 1543 • FIDE —</span>
-      <h1>Kirill — training for 1900+ by 2026</h1>
-      <p>Live tracker of ratings, events and milestones. Built for coaches, organizers and friends.</p>
-      <div class="kpis">
-        <div class="kpi"><div class="badge">FQE</div><h3 id="kpi-fqe">1543</h3><small>lente (QC)</small></div>
-        <div class="kpi"><div class="badge">CFC</div><h3 id="kpi-cfc">1500</h3><small>regular</small></div>
-        <div class="kpi"><div class="badge">FIDE</div><h3 id="kpi-fide">—</h3><small>to be established</small></div>
-        <div class="kpi"><div class="badge">Goal</div><h3>1900</h3><small>by Dec 2026</small></div>
-      </div>
-    </section>
-
-    <section style="margin-top:22px" class="grid">
-      <div class="card span-8">
-        <h3>Latest tournament</h3>
-        <div id="latest"></div>
-      </div>
-      <div class="card span-4">
-        <h3>Quick links</h3>
-        <ul>
-          <li><a href="https://www.fqechecs.qc.ca/membres/index.php?Id=109477" target="_blank">FQE Profile</a></li>
-          <li><a href="https://www.chess.com/member/Kirill_Evenko" target="_blank">Chess.com (Kirill_Evenko)</a></li>
-        </ul>
-      </div>
-    </section>
-
-    <footer>© 2025 KirillChess</footer>
+    <div class="text">
+      <h1>Kirill Evenko</h1>
+      <p>Passionate chess player from Quebec. Always improving, competing and enjoying the beauty of the game.</p>
+      <p>FIDE ID: 2666243 | CFC ID: 187189 | FQE ID: 109477</p>
+      <p>FIDE: 1787 | CFC: 1536 | FQE: 1543</p>
+    </div>
+    <div class="photo">
+      <img src="photo.jpg" alt="Kirill Playing Chess">
+    </div>
   </div>
-<script>
-fetch('data/tournaments.json')
-  .then(r=>r.json())
-  .then(data=>{
-    if(!data || !data.tournaments || data.tournaments.length===0){
-      document.getElementById('latest').textContent = 'No tournaments yet.'; return;
-    }
-    const t = data.tournaments[0];
-    const el = document.getElementById('latest');
-    el.innerHTML = `<div><b>${t.name}</b> — ${t.city} · ${t.date}
-      <br/>Rating: ${t.before} → <b>${t.after}</b> (${t.system})
-      <br/><a href="tournaments.html">See all</a></div>`;
-    document.getElementById('kpi-fqe').textContent = data.kpis?.fqe ?? '—';
-    document.getElementById('kpi-cfc').textContent = data.kpis?.cfc ?? '—';
-    document.getElementById('kpi-fide').textContent = data.kpis?.fide ?? '—';
-  });
-</script>
 </body>
 </html>
