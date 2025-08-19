@@ -1,0 +1,38 @@
+
+backend:
+  name: github
+  repo: your-username/your-repo  # ← CHANGE THIS
+  branch: main
+
+media_folder: "assets"
+public_folder: "assets"
+
+collections:
+  - name: "data"
+    label: "Data"
+    files:
+      - file: "data/tournaments.json"
+        label: "Tournaments"
+        name: "tournaments"
+        editor:
+          preview: false
+        fields:
+          - label: "KPIs"
+            name: "kpis"
+            widget: "object"
+            fields:
+              - {label: "FQE", name: "fqe", widget: "number", required: false}
+              - {label: "CFC", name: "cfc", widget: "number", required: false}
+              - {label: "FIDE", name: "fide", widget: "string", required: false}
+          - label: "Tournaments"
+            name: "tournaments"
+            widget: "list"
+            fields:
+              - {label: "Date", name: "date", widget: "string"}
+              - {label: "Name", name: "name", widget: "string"}
+              - {label: "City", name: "city", widget: "string", required: false}
+              - {label: "Before", name: "before", widget: "number"}
+              - {label: "After", name: "after", widget: "number"}
+              - {label: "Director", name: "director", widget: "string", required: false}
+              - {label: "System", name: "system", widget: "string", required: false}
+              - {label: "Players", name: "players", widget: "number", required: false}

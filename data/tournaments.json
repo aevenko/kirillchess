@@ -1,0 +1,19 @@
+{
+  "kpis": {
+    "fqe": 1543,
+    "cfc": 1500,
+    "fide": "—"
+  },
+  "tournaments": [
+    {
+      "date": "2025-07-20",
+      "name": "TOURNOI ÉLITE DE CHAMBLY (TEC) 2025",
+      "before": 1253,
+      "after": 1435,
+      "city": "Chambly",
+      "director": "Germain Laplante",
+      "system": "L",
+      "players": 47
+    }
+  ]
+}
