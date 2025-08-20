@@ -1,77 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Сыгранные турниры — KirillChess</title>
+  <meta charset="UTF-8">
+  <title>Сыгранные турниры - KirillChess</title>
   <style>
-    :root { --bg:#0b0c10; --card:#111318; --text:#e5e7eb; --muted:#9ca3af; --accent:#ffd166; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif; background: var(--bg); color: var(--text); }
-    header { padding: 32px 20px; text-align:center; }
-    h1 { margin:0 0 8px 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: 0.3px; }
-    p.sub { margin:0; color: var(--muted); }
-    main { max-width: 1100px; margin: 24px auto 64px; padding: 0 20px; }
-    .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 60%), var(--card);
-            border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 16px;
-            box-shadow: 0 1px 12px rgba(0,0,0,0.35); overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 760px; }
-    thead th { text-align: left; font-weight: 700; font-size: 14px; color: var(--muted); padding: 12px 10px;
-               border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; background: var(--card); }
-    tbody td { padding: 12px 10px; border-bottom: 1px dashed rgba(255,255,255,0.08); vertical-align: top; }
-    tbody tr:last-child td { border-bottom: none; }
-    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px;
-            background: rgba(255, 209, 102, 0.1); border: 1px solid rgba(255, 209, 102, 0.35);
-            color: var(--accent); font-weight: 600; font-size: 12px; }
-    footer { text-align:center; color: var(--muted); font-size: 12px; margin-top: 24px; }
+    body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 20px; }
+    h1 { text-align: center; }
+    table { border-collapse: collapse; margin: 0 auto; width: 90%; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #343a40; color: white; }
+    tr:nth-child(even) { background: #f2f2f2; }
+    a { display: block; margin: 20px auto; text-align: center; }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Сыгранные турниры</h1>
-    <p class="sub">Официальные результаты — 2025</p>
-  </header>
-  <main>
-    <div class="card">
-      <table id="tournament-table" aria-describedby="caption">
-        <thead>
-          <tr>
-            <th style="width: 160px;">Дата</th>
-            <th>Турнир</th>
-            <th>Локация</th>
-            <th style="width: 90px;">Очки</th>
-            <th style="width: 90px;">Место</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <footer id="caption">Источник: семейные записи и официальные организаторы. Данные подгружаются из data/past_tournaments.json.</footer>
-  </main>
-  <script>
-    async function loadData() {
-      const res = await fetch("data/past_tournaments.json", { cache: "no-store" });
-      const tbody = document.querySelector("#tournament-table tbody");
-      if (!res.ok) {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `<td colspan="5">Не удалось загрузить данные: ${res.status} ${res.statusText}</td>`;
-        tbody.appendChild(tr);
-        return;
-      }
-      const data = await res.json();
-      data.forEach(row => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${row.date}</td>
-          <td>${row.tournament}</td>
-          <td>${row.location || ""}</td>
-          <td><span class="pill">${row.points}</span></td>
-          <td>${row.place}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-    loadData();
-  </script>
+  <h1>Сыгранные турниры</h1>
+  <table>
+    <tr>
+      <th>Турнир</th>
+      <th>Котировка до</th>
+      <th>Котировка после</th>
+      <th>Город</th>
+      <th>Организатор</th>
+      <th>Судья</th>
+      <th>Тип</th>
+      <th>Дней</th>
+      <th>Участников</th>
+      <th>Год</th>
+    </tr>
+    <tr>
+      <td>TOURNOI ÉLITE DE CHAMBLY (TEC) 2025</td>
+      <td>1253</td>
+      <td>1435</td>
+      <td>Chambly</td>
+      <td>Club d'échecs Chambly-Richelieu</td>
+      <td>Germain Laplante</td>
+      <td>L</td>
+      <td>1</td>
+      <td>47</td>
+      <td>2025</td>
+    </tr>
+  </table>
+  <a href="index.html">← На главную</a>
 </body>
 </html>
