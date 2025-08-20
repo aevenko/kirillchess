@@ -46,20 +46,19 @@
         <tbody></tbody>
       </table>
     </div>
-    <footer id="caption">Источник: семейные записи и официальные организаторы. Данные подгружаются из /data/past_tournaments.json.</footer>
+    <footer id="caption">Источник: семейные записи и официальные организаторы. Данные подгружаются из data/past_tournaments.json.</footer>
   </main>
   <script>
     async function loadData() {
-      const res = await fetch("/data/past_tournaments.json", { cache: "no-store" });
+      const res = await fetch("data/past_tournaments.json", { cache: "no-store" });
+      const tbody = document.querySelector("#tournament-table tbody");
       if (!res.ok) {
-        const tbody = document.querySelector("#tournament-table tbody");
         const tr = document.createElement("tr");
         tr.innerHTML = `<td colspan="5">Не удалось загрузить данные: ${res.status} ${res.statusText}</td>`;
         tbody.appendChild(tr);
         return;
       }
       const data = await res.json();
-      const tbody = document.querySelector("#tournament-table tbody");
       data.forEach(row => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
