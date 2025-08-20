@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kirill — Past Tournaments</title>
+  <title>Сыгранные турниры — KirillChess</title>
   <style>
     :root { --bg:#0b0c10; --card:#111318; --text:#e5e7eb; --muted:#9ca3af; --accent:#ffd166; }
     * { box-sizing: border-box; }
@@ -12,63 +12,52 @@
     h1 { margin:0 0 8px 0; font-size: clamp(24px, 3vw, 34px); letter-spacing: 0.3px; }
     p.sub { margin:0; color: var(--muted); }
     main { max-width: 1100px; margin: 24px auto 64px; padding: 0 20px; }
-    .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 60%), var(--card);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 1px 12px rgba(0,0,0,0.35);
-      overflow-x: auto;
-    }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 60%), var(--card);
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 18px; padding: 16px;
+            box-shadow: 0 1px 12px rgba(0,0,0,0.35); overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 760px; }
-    thead th {
-      text-align: left;
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--muted);
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      position: sticky; top: 0; background: var(--card);
-    }
-    tbody td {
-      padding: 12px 10px;
-      border-bottom: 1px dashed rgba(255,255,255,0.08);
-      vertical-align: top;
-    }
+    thead th { text-align: left; font-weight: 700; font-size: 14px; color: var(--muted); padding: 12px 10px;
+               border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; background: var(--card); }
+    tbody td { padding: 12px 10px; border-bottom: 1px dashed rgba(255,255,255,0.08); vertical-align: top; }
     tbody tr:last-child td { border-bottom: none; }
-    .pill {
-      display: inline-block; padding: 4px 10px; border-radius: 999px;
-      background: rgba(255, 209, 102, 0.1); border: 1px solid rgba(255, 209, 102, 0.35);
-      color: var(--accent); font-weight: 600; font-size: 12px;
-    }
+    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px;
+            background: rgba(255, 209, 102, 0.1); border: 1px solid rgba(255, 209, 102, 0.35);
+            color: var(--accent); font-weight: 600; font-size: 12px; }
     footer { text-align:center; color: var(--muted); font-size: 12px; margin-top: 24px; }
   </style>
 </head>
 <body>
   <header>
-    <h1>Past Tournaments</h1>
-    <p class="sub">Kirill's official results — 2025</p>
+    <h1>Сыгранные турниры</h1>
+    <p class="sub">Официальные результаты — 2025</p>
   </header>
   <main>
     <div class="card">
       <table id="tournament-table" aria-describedby="caption">
         <thead>
           <tr>
-            <th style="width: 160px;">Date</th>
-            <th>Tournament</th>
-            <th>Location</th>
-            <th style="width: 90px;">Points</th>
-            <th style="width: 90px;">Place</th>
+            <th style="width: 160px;">Дата</th>
+            <th>Турнир</th>
+            <th>Локация</th>
+            <th style="width: 90px;">Очки</th>
+            <th style="width: 90px;">Место</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
-    <footer id="caption">Source: Family records & official organizers. Page generated statically from JSON.</footer>
+    <footer id="caption">Источник: семейные записи и официальные организаторы. Данные подгружаются из /data/past_tournaments.json.</footer>
   </main>
   <script>
     async function loadData() {
-      const res = await fetch("./data/past_tournaments.json", { cache: "no-store" });
+      const res = await fetch("/data/past_tournaments.json", { cache: "no-store" });
+      if (!res.ok) {
+        const tbody = document.querySelector("#tournament-table tbody");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="5">Не удалось загрузить данные: ${res.status} ${res.statusText}</td>`;
+        tbody.appendChild(tr);
+        return;
+      }
       const data = await res.json();
       const tbody = document.querySelector("#tournament-table tbody");
       data.forEach(row => {
