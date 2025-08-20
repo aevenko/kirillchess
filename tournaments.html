@@ -1,56 +1,42 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Tournaments • KirillChess</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <title>Сыгранные турниры - KirillChess</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <nav class="nav">
-      <div class="brand">♟️ KirillChess</div>
-      <div class="menu">
-        <a href="index.html">Home</a>
-        <a href="tournaments.html" class="active">Tournaments</a>
-        <a href="goals.html">Goals</a>
-        <a href="contact.html">Contact</a>
-      </div>
-    </nav>
-
-    <section class="card" style="margin-top:24px">
-      <h2>All tournaments</h2>
-      <input id="q" class="input" placeholder="Filter by name or city…" oninput="render()"/>
-      <div style="overflow:auto;margin-top:12px">
-        <table class="table" id="tab">
-          <thead><tr>
-            <th>Date</th><th>Tournament</th><th>City</th><th>Before</th><th>After</th><th>TD</th><th>Type</th><th>Players</th>
-          </tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-    <footer>© 2025 KirillChess</footer>
+    <h1>Сыгранные турниры</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Турнир</th>
+          <th>Котé (до)</th>
+          <th>Котé (после)</th>
+          <th>Город</th>
+          <th>Организатор</th>
+          <th>Арбитр</th>
+          <th>Тип</th>
+          <th>Участников</th>
+          <th>Дата</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TOURNOI ÉLITE DE CHAMBLY (TEC) 2025</td>
+          <td>1253</td>
+          <td>1435</td>
+          <td>Chambly</td>
+          <td>Club d'échecs Chambly-Richelieu</td>
+          <td>Germain Laplante</td>
+          <td>L</td>
+          <td>47</td>
+          <td>2025</td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="index.html">Назад на главную</a></p>
   </div>
-<script>
-let DATA = {tournaments:[]};
-fetch('data/tournaments.json').then(r=>r.json()).then(j=>{DATA=j; render();});
-function render(){
-  const q = document.getElementById('q').value.toLowerCase();
-  const rows = (DATA.tournaments||[]).filter(t => 
-      !q || t.name.toLowerCase().includes(q) || (t.city||'').toLowerCase().includes(q)
-    ).map(t=>`<tr>
-      <td>${t.date}</td>
-      <td>${t.name}</td>
-      <td>${t.city||''}</td>
-      <td>${t.before}</td>
-      <td><b>${t.after}</b></td>
-      <td>${t.director||''}</td>
-      <td>${t.system||''}</td>
-      <td>${t.players||''}</td>
-    </tr>`).join('');
-  document.querySelector('#tab tbody').innerHTML = rows || `<tr><td colspan="8">No data</td></tr>`;
-}
-</script>
 </body>
 </html>
