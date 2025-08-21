@@ -23,7 +23,8 @@
       background:
         radial-gradient(1200px 800px at 85% -10%, rgba(109,176,255,.22), transparent 60%),
         radial-gradient(1100px 900px at 10% 110%, rgba(123,211,137,.18), transparent 60%),
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" opacity="0.05"><g fill="white"><circle cx="90" cy="90" r="28"/><path d="M270 210c0-28 22-50 50-50s50 22 50 50c0 18-9 33-23 42l10 24h-74l10-24c-14-9-23-24-23-42z"/></g></svg>') repeat,
+        /* subtle tiled chess icons */ 
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" opacity="0.05"><g fill="white"><circle cx="50" cy="50" r="20"/><rect x="120" y="40" width="40" height="40"/><path d="M100 160c0-22 18-40 40-40s40 18 40 40c0 14-7 26-18 34l8 18h-60l8-18c-11-8-18-20-18-34z"/></g></svg>') repeat,
         linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
         linear-gradient(0deg,  rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
         var(--bg-dark);
@@ -103,7 +104,7 @@
     </section>
 
     <footer>
-      © <span id="y"></span> Kirill Evenko • Сайт вдохновлён стильными шахматными темами.
+      © <span id="y"></span> Kirill Evenko
     </footer>
   </div>
   <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
