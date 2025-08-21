@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kirill — Chess Journey</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg-dark:#0c0f14;
@@ -20,32 +20,14 @@
     html,body{height:100%}
     body{
       margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
-      /* БОЛЕЕ ВЫРАЖЕННЫЙ ГРАДИЕНТНЫЙ ФОН + сетка + водяной знак шахматных фигур */
       background:
-        radial-gradient(1200px 800px at 85% -10%, rgba(109,176,255,.25), transparent 60%),
-        radial-gradient(1100px 900px at 10% 110%, rgba(123,211,137,.22), transparent 60%),
-        radial-gradient(900px 700px at -20% 10%, rgba(109,176,255,.12), transparent 60%),
-        linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,0)) 0 0/64px 64px,
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" opacity="0.07"><g fill="white" transform="translate(0,0)"><path d="M60 120h60v60H60z"/><circle cx="90" cy="90" r="28"/><path d="M270 210c0-28 22-50 50-50s50 22 50 50c0 18-9 33-23 42l10 24h-74l10-24c-14-9-23-24-23-42z"/></g></svg>') repeat,
-        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px) 0 0/64px 64px,
-        linear-gradient(0deg,  rgba(255,255,255,.05) 1px, transparent 1px) 0 0/64px 64px,
+        radial-gradient(1200px 800px at 85% -10%, rgba(109,176,255,.22), transparent 60%),
+        radial-gradient(1100px 900px at 10% 110%, rgba(123,211,137,.18), transparent 60%),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" opacity="0.05"><g fill="white"><circle cx="90" cy="90" r="28"/><path d="M270 210c0-28 22-50 50-50s50 22 50 50c0 18-9 33-23 42l10 24h-74l10-24c-14-9-23-24-23-42z"/></g></svg>') repeat,
+        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
+        linear-gradient(0deg,  rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
         var(--bg-dark);
       background-attachment: fixed;
-      position:relative;
-      overflow-x:hidden;
-    }
-    /* Крупные диагональные подложки-фигуры в углах */
-    body::before, body::after{
-      content:""; position:fixed; pointer-events:none; z-index:-1; opacity:.09; filter:blur(.2px);
-      background-repeat:no-repeat; background-size:contain;
-    }
-    body::before{ inset:auto auto 5% -8%; width:560px; height:560px;
-      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 256 256" fill="white"><path d="M64 224h128l-8-24c22-12 36-36 36-62 0-40-32-72-72-72s-72 32-72 72c0 26 14 50 36 62l-8 24z"/></svg>');
-      transform:rotate(-12deg);
-    }
-    body::after{ inset:-6% -10% auto auto; width:520px; height:520px;
-      background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 256 256" fill="white"><path d="M208 224H48l12-40 20-20V96l-12-12 16-8 24 24v56l20 20 12 40h68z"/></svg>');
-      transform:rotate(15deg);
     }
 
     .wrap{max-width:1200px; margin:0 auto; padding:28px;}
@@ -62,11 +44,11 @@
     .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center; margin-top:24px}
     .card{background:var(--card); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.08); padding:28px; border-radius:var(--radius);}
     .headline{font-size:46px; line-height:1.05; margin:0 0 10px;}
-    .motto{display:inline-block; margin:6px 0 14px; font-weight:800; letter-spacing:.5px; text-transform:uppercase; font-size:16px; padding:8px 12px; border-radius:999px; background:linear-gradient(135deg, rgba(109,176,255,.25), rgba(123,211,137,.25)); border:1px solid rgba(255,255,255,.18); color:#dff3ff;}
     .sub{color:var(--muted); font-size:18px; margin:0 0 18px}
     .bio p{margin:0 0 12px}
-    figure{margin:0}
-    .portrait{ width:100%; height:auto; border-radius:var(--radius); display:block; box-shadow:0 18px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.12)}
+    figure{margin:0; text-align:center;}
+    .portrait{ width:100%; height:auto; border-radius:var(--radius); display:block; box-shadow:0 18px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.12); margin-bottom:16px;}
+    .motto{font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#ffffff; text-shadow:0 3px 8px rgba(0,0,0,.5);}
     .badges{display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 4px}
     .badge{font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12)}
     footer{margin:42px 0 12px; text-align:center; color:var(--muted); font-size:12px}
@@ -93,7 +75,6 @@
     <section class="hero">
       <div class="card bio">
         <h1 class="headline">Кирилл Евенко — путь в шахматах</h1>
-        <span class="motto">Just make a move</span>
         <p class="sub">Юный игрок из Квебека, который учится каждый день и любит честную борьбу за доской.</p>
         <p>
           Кирилл открыл для себя шахматы в <strong>5 лет</strong> — папа показал первую партию, и с тех пор игра стала частью его жизни.
@@ -117,6 +98,7 @@
 
       <figure class="card">
         <img class="portrait" src="kirill.jpg" alt="Кирилл за шахматной доской" />
+        <div class="motto">Just make a move</div>
       </figure>
     </section>
 
