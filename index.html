@@ -21,15 +21,10 @@
     body{
       margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
       background:
-        radial-gradient(1200px 800px at 85% -10%, rgba(109,176,255,.22), transparent 60%),
-        radial-gradient(1100px 900px at 10% 110%, rgba(123,211,137,.18), transparent 60%),
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200" opacity="0.05"><g fill="white"><circle cx="50" cy="50" r="20"/><rect x="120" y="40" width="40" height="40"/><path d="M100 160c0-22 18-40 40-40s40 18 40 40c0 14-7 26-18 34l8 18h-60l8-18c-11-8-18-20-18-34z"/></g></svg>') repeat,
-        linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
-        linear-gradient(0deg,  rgba(255,255,255,.04) 1px, transparent 1px) 0 0/64px 64px,
-        var(--bg-dark);
-      background-attachment: fixed;
+        linear-gradient(rgba(12,15,20,0.86), rgba(12,15,20,0.86)),
+        url('chess-bg.png') no-repeat center center fixed;
+      background-size: cover;
     }
-
     .wrap{max-width:1200px; margin:0 auto; padding:28px;}
     header{display:flex; align-items:center; gap:18px; justify-content:space-between; flex-wrap:wrap;}
     .logo{ display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--text);}
@@ -83,10 +78,10 @@
         </p>
         <p>
           Его цели — сильная позиционная игра, аккуратная техника в эндшпиле и стабильные результаты на классических контролях.
-          Кирилл любит разбирать свои партии, работать над дебютной базой и искать нестандартные решения.
+          Кирилл любит разбирать свои партии, работать над дебютной базой и играть командные лиги.
         </p>
         <div class="badges">
-          <span class="badge"><a href="https://ratings.fide.com/profile/2666243" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">FIDE — 1787</a></span>
+          <span class="badge"><a href="https://ratings.fide.com/profile/2666243" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">FIDE ID 2666243 — 1787</a></span>
           <span class="badge"><a href="https://www.chess.ca/en/players" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">CFC — 1526</a></span>
           <span class="badge"><a href="https://www.fqechecs.qc.ca/membres/index.php?Id=109477" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">FQE — 1524</a></span>
         </div>
