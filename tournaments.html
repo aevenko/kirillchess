@@ -1,42 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Сыгранные турниры - KirillChess</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Сыгранные турниры — Kirill Chess</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:"Inter",sans-serif; background:#0c0f14; color:#e9eef6; margin:0; padding:20px;}
+    h1{font-size:28px; margin-bottom:20px;}
+    table{width:100%; border-collapse:collapse; background:#121620ee; border-radius:12px; overflow:hidden;}
+    th,td{padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.1); text-align:left;}
+    th{background:rgba(255,255,255,0.08);}
+    tr:hover{background:rgba(255,255,255,0.05);}
+    footer{margin-top:20px; font-size:12px; color:#b9c2d3; text-align:center;}
+  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Сыгранные турниры</h1>
-    <table>
-      <thead>
-        <tr>
-          <th>Турнир</th>
-          <th>Котé (до)</th>
-          <th>Котé (после)</th>
-          <th>Город</th>
-          <th>Организатор</th>
-          <th>Арбитр</th>
-          <th>Тип</th>
-          <th>Участников</th>
-          <th>Дата</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>TOURNOI ÉLITE DE CHAMBLY (TEC) 2025</td>
-          <td>1253</td>
-          <td>1435</td>
-          <td>Chambly</td>
-          <td>Club d'échecs Chambly-Richelieu</td>
-          <td>Germain Laplante</td>
-          <td>L</td>
-          <td>47</td>
-          <td>2025</td>
-        </tr>
-      </tbody>
-    </table>
-    <p><a href="index.html">Назад на главную</a></p>
-  </div>
+  <h1>Сыгранные турниры</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Дата</th>
+        <th>Турнир</th>
+        <th>Город</th>
+        <th>Очки</th>
+        <th>Место</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>25 janvier</td><td>Championnat ouvert d'échecs semi rapides de Montréal</td><td>Montréal</td><td>2/5</td><td>26/39</td></tr>
+      <tr><td>31 janvier – 2 février</td><td>Le Championnat jeunesse d'échecs du Québec</td><td>Québec</td><td>3/5</td><td>7/18</td></tr>
+      <tr><td>21-23 février</td><td>Tournoi du Carnaval</td><td>Montréal</td><td>3/5</td><td>14/51</td></tr>
+      <tr><td>2 mars</td><td>Qualification de Verdun</td><td>Verdun, QC</td><td>3.5/5</td><td>4/20</td></tr>
+      <tr><td>8-9 mars</td><td>Championnat Scolaire de l’état de New York 2025</td><td>Saratoga, NY</td><td>3.5/7</td><td>49/64</td></tr>
+      <tr><td>16 mars</td><td>Le Grand Tour jeunesse du Québec</td><td>Montréal</td><td>4/5</td><td>3/36</td></tr>
+      <tr><td>21-23 mars</td><td>48e Championnat Ouvert de la Mauricie</td><td>Trois-Rivières, QC</td><td>4/5</td><td>3/20</td></tr>
+      <tr><td>29 mars</td><td>Blitz Bliss - Tournoi de parties rapides</td><td>Montréal</td><td>3/14</td><td>19/23</td></tr>
+      <tr><td>5 avril</td><td>Qualification l'Ouest de l'Île</td><td>Montréal</td><td>4.5/5</td><td>1/12</td></tr>
+      <tr><td>7 avril</td><td>Tournoi Bâtisseur de Pâques 2025</td><td>Montréal</td><td>4/5</td><td>3/16</td></tr>
+      <tr><td>13 avril</td><td>Tournoi de Qualification 3</td><td>Montréal</td><td>4/5</td><td>2/30</td></tr>
+      <tr><td>27 avril</td><td>Défi Échiquéen du Québec 2025</td><td>Montréal</td><td>3.5/5</td><td>10/64</td></tr>
+      <tr><td>4 mai</td><td>Finale des Bâtisseurs</td><td>Montréal</td><td>3/5</td><td>5/17</td></tr>
+      <tr><td>11 mai</td><td>Grand Prix Scolaire 2024-2025</td><td>Montréal</td><td>4/5</td><td>6/54</td></tr>
+      <tr><td>20 mai</td><td>Classical Bliss v.6</td><td>Montréal</td><td>3/4</td><td>7/24</td></tr>
+      <tr><td>17-21 mai</td><td>Capablanca Inmemorial 58</td><td>Varadero, Cuba</td><td>5/8</td><td>22/106</td></tr>
+      <tr><td>25 mai</td><td>Championnat Jeunesse du Québec</td><td>Montréal</td><td>3.5/5</td><td>12/53</td></tr>
+      <tr><td>15 juin</td><td>Tournoi Élite de Chambly (TEC) 2025</td><td>Chambly, QC</td><td>4.5/7</td><td>4/47</td></tr>
+      <tr><td>20-22 juin</td><td>Championnat ouvert de Laval 2025</td><td>Laval, QC</td><td>2/5</td><td>28/42</td></tr>
+      <tr><td>17-23 août</td><td>The 2025 North American Youth Chess Championships</td><td>Kingston, ON</td><td>4.5/9</td><td>28/64</td></tr>
+    </tbody>
+  </table>
+  <footer>
+    © <span id="y"></span> Kirill Evenko
+  </footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
