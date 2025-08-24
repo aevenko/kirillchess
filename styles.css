@@ -1,0 +1,27 @@
+/* Global site styles: sets the chess background on ALL pages */
+html, body { height: 100%; }
+
+/* Background image across the whole site */
+body {
+  background-image: url('chess-bg.jpg');   /* put chess-bg.jpg next to each HTML file OR adjust path */
+  background-size: cover;                   /* fill screen */
+  background-position: center;              /* center image */
+  background-repeat: no-repeat;             /* no tiling */
+  background-attachment: fixed;             /* parallax-like effect */
+}
+
+/* Optional: soft dark overlay to keep text readable */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 15, 20, 0.45);       /* tweak 0.35–0.6 to taste */
+  pointer-events: none;
+}
+
+/* Keep your existing cards readable on the image */
+.card {
+  background: rgba(18, 22, 32, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
