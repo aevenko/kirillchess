@@ -1,106 +1,71 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Kirill — Chess Journey</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-dark:#0c0f14;
-      --brand:#7bd389;
-      --brand-2:#6db0ff;
-      --text:#e9eef6;
-      --muted:#b9c2d3;
-      --card:#121620ee;
-      --radius:18px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--text);
-      background:
-        linear-gradient(rgba(12,15,20,0.86), rgba(12,15,20,0.86)),
-        url('chess-bg.png') no-repeat center center fixed;
-      background-size: cover;
-    }
-    .wrap{max-width:1200px; margin:0 auto; padding:28px;}
-    header{display:flex; align-items:center; gap:18px; justify-content:space-between; flex-wrap:wrap;}
-    .logo{ display:flex; align-items:center; gap:14px; text-decoration:none; color:var(--text);}
-    .logo-mark{ width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,var(--brand),var(--brand-2)); display:grid; place-items:center; box-shadow:0 10px 30px rgba(109,176,255,.25); }
-    .logo-mark svg{filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));}
-    .logo strong{font-weight:800; letter-spacing:.3px}
-    .actions{display:flex; gap:12px; flex-wrap:wrap}
-    .btn{border:none; cursor:pointer; text-decoration:none; padding:12px 16px; border-radius:12px; font-weight:600; letter-spacing:.2px}
-    .btn-primary{background:linear-gradient(135deg,var(--brand-2),var(--brand)); color:#061018;}
-    .btn-ghost{background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.15)}
-    .btn:hover{transform:translateY(-1px); box-shadow:0 8px 24px rgba(109,176,255,.22)}
-    .hero{display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center; margin-top:24px}
-    .card{background:var(--card); backdrop-filter: blur(8px); border:1px solid rgba(255,255,255,.08); padding:28px; border-radius:var(--radius);}
-    .headline{font-size:46px; line-height:1.05; margin:0 0 10px;}
-    .sub{color:var(--muted); font-size:18px; margin:0 0 18px}
-    .bio p{margin:0 0 12px}
-    figure{margin:0; text-align:center;}
-    .portrait{ width:100%; height:auto; border-radius:var(--radius); display:block; box-shadow:0 18px 50px rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.12); margin-bottom:16px;}
-    .motto{font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:#ffffff; text-shadow:0 3px 8px rgba(0,0,0,.5);}
-    .badges{display:flex; gap:10px; flex-wrap:wrap; margin:16px 0 4px}
-    .badge{font-size:12px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12)}
-    footer{margin:42px 0 12px; text-align:center; color:var(--muted); font-size:12px}
-    @media (max-width: 860px){ .hero{grid-template-columns:1fr;} .headline{font-size:36px} }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirill Chess</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <a class="logo" href="#">
-        <span class="logo-mark" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#0b1321" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 21h6v-2H9v2zm7.5-8.5a4.5 4.5 0 10-9 0c0 1.64.88 3.07 2.2 3.85L9 18h6l-.7-1.65a4.48 4.48 0 002.2-3.85z"/>
-          </svg>
-        </span>
-        <strong>kirillchess.com</strong>
-      </a>
-      <nav class="actions">
-        <a class="btn btn-ghost" target="_blank" rel="noopener" href="/tournaments-played.html">Сыгранные турниры</a>
-        <a class="btn btn-primary" target="_blank" rel="noopener" href="/tournaments-upcoming.html">Предстоящие турниры</a>
+<body class="bg-gray-100 text-gray-900">
+
+  <!-- Header -->
+  <header class="bg-gray-800 text-white py-6">
+    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Kirill Evenko</h1>
+      <nav class="space-x-4">
+        <a href="#about" class="hover:underline">О Кирилле</a>
+        <a href="#tournaments" class="hover:underline">Турниры</a>
+        <a href="#contact" class="hover:underline">Контакты</a>
       </nav>
-    </header>
+    </div>
+  </header>
 
-    <section class="hero">
-      <div class="card bio">
-        <h1 class="headline">Кирилл Евенко</h1>
-        <p class="sub">Юный игрок из Квебека, который учится каждый день и любит честную борьбу за доской.</p>
-        <p>
-          Кирилл открыл для себя шахматы в <strong>5 лет</strong> — папа показал первую партию, и с тех пор игра стала частью его жизни.
-          Сегодня Кирилл регулярно выступает на <strong>канадских и международных турнирах</strong>, уверенно растёт рейтингово
-          и продолжает тренироваться с большим вдохновением.
-        </p>
-        <p>
-          Его цели — сильная позиционная игра, аккуратная техника в эндшпиле и стабильные результаты на классических контролях.
-          Кирилл любит разбирать свои партии, работать над дебютной базой и играть командные лиги.
-        </p>
-        <div class="badges">
-          <span class="badge"><a href="https://ratings.fide.com/profile/2666243" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">FIDE ID 2666243 — 1787</a></span>
-          <span class="badge"><a href="https://www.chess.ca/en/players" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">CFC — 1526</a></span>
-          <span class="badge"><a href="https://www.fqechecs.qc.ca/membres/index.php?Id=109477" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">FQE — 1524</a></span>
-        </div>
-        <div class="actions" style="margin-top:10px">
-          <a class="btn btn-primary" target="_blank" rel="noopener" href="/tournaments-upcoming.html">Ближайший турнир</a>
-          <a class="btn btn-ghost" target="_blank" rel="noopener" href="/tournaments-played.html">Последние результаты</a>
-        </div>
+  <!-- About -->
+  <section id="about" class="py-12 bg-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">О Кирилле</h2>
+      <p class="text-lg leading-relaxed mb-6">
+        Юный игрок из Квебека, который учится каждый день и любит честную борьбу за доской.
+      </p>
+      <p class="text-lg leading-relaxed mb-6">
+        Кирилл открыл для себя шахматы в 5 лет — папа показал первую партию, и с тех пор игра стала частью его жизни. 
+        Сегодня Кирилл регулярно выступает на канадских и международных турнирах, уверенно растёт и продолжает тренироваться с большим вдохновением.
+      </p>
+      <p class="text-lg leading-relaxed mb-6">
+        Его главная цель — стать гроссмейстером. Кирилл считает главным в шахматах настойчивость и упорство.
+      </p>
+
+      <div class="flex justify-center space-x-4 mt-8">
+        <!-- FIDE button -->
+        <a href="https://ratings.fide.com/profile/2666243" 
+           target="_blank" 
+           class="bg-blue-600 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-700 transition">
+           FIDE – 1787
+        </a>
+
+        <!-- CFC button -->
+        <a href="https://www.chess.ca/en/ratings/p/?id=187189" 
+           target="_blank" 
+           class="bg-red-600 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700 transition">
+           CFC – 1526
+        </a>
+
+        <!-- FQE button -->
+        <a href="https://www.fqechecs.qc.ca/membres/index.php?Id=109477" 
+           target="_blank" 
+           class="bg-green-600 text-white px-6 py-2 rounded-lg shadow hover:bg-green-700 transition">
+           FQE – 1524
+        </a>
       </div>
+    </div>
+  </section>
 
-      <figure class="card">
-        <img class="portrait" src="kirill.jpg" alt="Кирилл за шахматной доской" />
-        <div class="motto">Just make a move</div>
-      </figure>
-    </section>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6 mt-12">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p>&copy; 2025 Kirill Chess. Все права защищены.</p>
+    </div>
+  </footer>
 
-    <footer>
-      © <span id="y"></span> Kirill Evenko
-    </footer>
-  </div>
-  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
