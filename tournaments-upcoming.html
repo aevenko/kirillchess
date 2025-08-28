@@ -1,27 +1,46 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Предстоящие турниры — Kirill</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Предстоящие турниры — Kirill Chess</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
-    body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:#0c0f14;color:#e9eef6}
-    .wrap{max-width:1100px;margin:0 auto;padding:28px}
-    a{color:#7bd389} .card{background:#121620ee;border:1px solid rgba(255,255,255,.08);padding:22px;border-radius:16px}
-    ul{margin:10px 0 0 18px}
-    li{margin:8px 0}
-    .back{display:inline-block;margin-bottom:16px}
+    body{font-family:"Inter",sans-serif; color:#e9eef6; margin:0; padding:20px;}
+    h1{font-size:28px; margin-bottom:20px;}
+    table{width:100%; border-collapse:collapse; background:#121620ee; border-radius:12px; overflow:hidden;}
+    th,td{padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.1); text-align:left;}
+    th{background:rgba(255,255,255,0.08);}
+    tr:hover{background:rgba(255,255,255,0.05);}
+    footer{margin-top:20px; font-size:12px; color:#b9c2d3; text-align:center;}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <a class="back" href="/" target="_self">← На главную</a>
-    <h1>Предстоящие турниры</h1>
-    <div class="card">
-      <ul>
-        <li>Скоро добавим ближайшие старты (FQE / CFC / FIDE). Можно подключить автоподгрузку.</li>
-      </ul>
-    </div>
-  </div>
+  <h1>Предстоящие турниры</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Дата</th>
+        <th>Турнир</th>
+        <th>Место проведения</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>3–7 septembre</td><td>Montréal Open 2025</td><td>505 Rue Jean-Talon E, Montréal, QC H2R 1T6</td></tr>
+      <tr><td>17–19 octobre</td><td>Championnat d'échecs du Haut-Richelieu</td><td>15 Rue Jacques-Cartier N, Saint-Jean-sur-Richelieu, QC J3B 8R8</td></tr>
+      <tr><td>9 novembre</td><td>Grand Prix Régulier (CAM)</td><td>À confirmer</td></tr>
+      <tr><td>14 décembre</td><td>Tournoi Régulier de la Rive-Sud (CAM)</td><td>3055, Boul. de Rome, Brossard</td></tr>
+      <tr><td>8 février</td><td>Tournois de qualification (CAM)</td><td>À confirmer</td></tr>
+      <tr><td>10–12 avril</td><td>Tournois de Germain Laplante</td><td>1625 boul. de Périgny, Chambly, J3L 1X1</td></tr>
+      <tr><td>26 avril</td><td>Défi Échiquéen du Québec (CAM)</td><td>Sheraton Laval</td></tr>
+      <tr><td>6–10 juillet</td><td>CYCC 2026</td><td>Ottawa</td></tr>
+    </tbody>
+  </table>
+  <footer>
+    © <span id="y"></span> Kirill Evenko
+  </footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
