@@ -1,0 +1,20 @@
+{
+  "updated_at": "",
+  "fide": {
+    "id": "2666243",
+    "standard": null,
+    "rapid": null,
+    "blitz": null
+  },
+  "cfc": {
+    "id": "187189",
+    "regular": null,
+    "quick": null
+  },
+  "fqe": {
+    "id": "109477",
+    "lente": null,
+    "semi_rapide": null,
+    "rapide": null
+  }
+}
