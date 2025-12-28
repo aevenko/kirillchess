@@ -1,207 +1,281 @@
-let board=null, game=null, orientation='white';
-let currentMoves=[], currentFens=[], currentHeaders={}, plyIndex=0;
-let engineOn=false, engineWorker=null;
+/* PGN viewer + light engine analysis (Stockfish in browser)
+   Data source:
+     - data/games/index.json (auto-generated)
+     - data/games/*.pgn
+*/
 
-const el=id=>document.getElementById(id);
+let board = null;
+let chess = null;
+let movesSan = [];
+let moveIndex = 0;
 
-async function fetchJSON(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.json(); }
-async function fetchText(url){ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) throw new Error(r.status); return r.text(); }
+let engine = null;
+let engineEnabled = false;
+let lastEngineFen = "";
 
-function esc(s){ return (s??'').toString().replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
-function safe(s){ return (s??'').toString().trim(); }
+function $(id){ return document.getElementById(id); }
 
-function buildTitle(g){
-  const w=safe(g.white)||'White', b=safe(g.black)||'Black', res=safe(g.result)||'';
-  const date=(safe(g.date) && g.date!=='????.??.??')?g.date:'';
-  const ev=(safe(g.event) && g.event!=='?')?g.event:'';
-  return [ `${w} vs ${b}${res?('  '+res):''}`, ev, date ].filter(Boolean).join(' • ');
+function setStatus(text){
+  const el = $("statusLine");
+  if (el) el.textContent = text || "";
 }
 
-function initBoard(){
-  if(board) return;
-  board = Chessboard('board', { position:'start', orientation });
+function safeText(x){ return (x === null || x === undefined || x === "") ? "—" : String(x); }
+
+function formatGameTitle(g){
+  const w = safeText(g.white);
+  const b = safeText(g.black);
+  const res = safeText(g.result);
+  const ev = safeText(g.event);
+  const dt = safeText(g.date || g.year);
+  return `${w} vs ${b} • ${res} • ${ev} • ${dt}`;
 }
 
-function extractHeaders(pgn){
-  const h={};
-  for(const line of pgn.split(/\r?\n/)){
-    if(line.startsWith('[')){
-      const m=line.match(/\[(\w+)\s+\"(.*)\"\]/);
-      if(m) h[m[1]]=m[2];
-    }
-  }
-  return h;
+async function fetchJSON(url){
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error("Failed to load " + url);
+  return await r.json();
 }
 
-function buildMeta(h){
-  const ev=safe(h.Event), site=safe(h.Site), date=safe(h.Date), rnd=safe(h.Round);
-  const eco=safe(h.ECO), op=safe(h.Opening);
-  const w=safe(h.White), b=safe(h.Black), res=safe(h.Result);
-  const wE=safe(h.WhiteElo)||safe(h.WhiteELO), bE=safe(h.BlackElo)||safe(h.BlackELO);
-  const lines=[];
-  const l1=[ev, site, (date && date!=='????.??.??')?date:'', (rnd && rnd!=='?')?('Round '+rnd):'' ].filter(Boolean).join(' • ');
-  if(l1) lines.push(l1);
-  const l2=[`${w}${wE?(' ('+wE+')'):''}`, 'vs', `${b}${bE?(' ('+bE+')'):''}`, res].filter(Boolean).join(' ');
-  if(l2.trim()) lines.push(l2);
-  const l3=[eco?('ECO '+eco):'', op].filter(Boolean).join(' • ');
-  if(l3) lines.push(l3);
-  return lines.join('<br>');
+async function fetchText(url){
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error("Failed to load " + url);
+  return await r.text();
 }
 
-function buildFensFromPgn(pgn){
-  game=new Chess();
-  game.load_pgn(pgn, {sloppy:true});
-  const hist=game.history({verbose:true});
-  const g2=new Chess();
-  currentFens=['start']; currentMoves=[];
-  for(const mv of hist){
-    g2.move(mv);
-    currentMoves.push(mv.san);
-    currentFens.push(g2.fen());
-  }
-}
+function renderGamesList(games){
+  const list = $("gamesList");
+  list.innerHTML = "";
 
-function renderMoves(){
-  const box=el('moves'); box.innerHTML='';
-  const start=document.createElement('div');
-  start.className='moveRow';
-  start.innerHTML=`<span data-ply="0" style="opacity:.85;">Start position</span>`;
-  start.querySelector('span').onclick=()=>setPly(0);
-  box.appendChild(start);
+  games.forEach((g, i) => {
+    const div = document.createElement("div");
+    div.className = "game-item";
+    div.dataset.index = String(i);
 
-  for(let i=0;i<currentMoves.length;i+=2){
-    const moveNo=(i/2)+1;
-    const w=currentMoves[i]||'', b=currentMoves[i+1]||'';
-    const row=document.createElement('div');
-    row.className='moveRow';
-    row.innerHTML = `<span style="opacity:.7;min-width:32px;">${moveNo}.</span>
-      <span data-ply="${i+1}">${esc(w)}</span>
-      <span data-ply="${i+2}">${esc(b)}</span>`;
-    row.querySelectorAll('span[data-ply]').forEach(s=>{
-      s.onclick=()=>setPly(parseInt(s.dataset.ply,10));
+    const top = document.createElement("div");
+    top.style.fontWeight = "600";
+    top.textContent = `${safeText(g.white)} vs ${safeText(g.black)}`;
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = `${safeText(g.result)} • ${safeText(g.event)} • ${safeText(g.date || g.year)}`;
+
+    div.appendChild(top);
+    div.appendChild(meta);
+
+    div.addEventListener("click", async () => {
+      document.querySelectorAll(".game-item").forEach(x => x.classList.remove("active"));
+      div.classList.add("active");
+      await loadGame(g);
     });
-    box.appendChild(row);
-  }
-}
 
-function highlight(){
-  document.querySelectorAll('#moves span[data-ply]').forEach(s=>s.classList.remove('active'));
-  const a=document.querySelector(`#moves span[data-ply="${plyIndex}"]`);
-  if(a) a.classList.add('active');
-}
-
-function setPly(i){
-  plyIndex=Math.max(0, Math.min(i, currentFens.length-1));
-  const fen = (plyIndex===0)?'start':currentFens[plyIndex];
-  board.position(fen==='start'?'start':fen,false);
-  highlight();
-  if(engineOn) requestEval();
-}
-
-async function loadGame(file){
-  initBoard();
-  el('engineEval').textContent='—'; el('enginePV').textContent='';
-  const pgn=await fetchText(file);
-  currentHeaders=extractHeaders(pgn);
-  buildFensFromPgn(pgn);
-  el('pgnMeta').innerHTML = buildMeta(currentHeaders) || esc(file.split('/').pop());
-  renderMoves();
-  // orientation
-  const w=(currentHeaders.White||'').toLowerCase(), b=(currentHeaders.Black||'').toLowerCase();
-  if(w.includes('kirill')) orientation='white';
-  else if(b.includes('kirill')) orientation='black';
-  board.orientation(orientation);
-  setPly(0);
-}
-
-function renderList(games){
-  const list=el('gameList'); list.innerHTML='';
-  for(const g of games){
-    const d=document.createElement('div');
-    d.className='gameItem';
-    d.innerHTML=`<div class="gameTitle">${esc(buildTitle(g))}</div>
-      <div class="gameMeta">${esc((g.opening && g.opening!=='?')?g.opening:(g.eco?('ECO '+g.eco):''))}</div>`;
-    d.onclick=()=>loadGame(g.file);
-    list.appendChild(d);
-  }
-}
-
-function wire(){
-  el('btnStart').onclick=()=>setPly(0);
-  el('btnPrev').onclick=()=>setPly(plyIndex-1);
-  el('btnNext').onclick=()=>setPly(plyIndex+1);
-  el('btnEnd').onclick=()=>setPly(currentFens.length-1);
-  el('btnFlip').onclick=()=>{ orientation=(orientation==='white')?'black':'white'; board.orientation(orientation); };
-
-  el('btnEngine').onclick=()=>{
-    engineOn=!engineOn;
-    el('btnEngine').textContent = engineOn ? 'Engine: ON' : 'Engine: OFF';
-    if(engineOn){ startEngine(); requestEval(); }
-    else { stopEngine(); el('engineEval').textContent='—'; el('enginePV').textContent=''; }
-  };
-
-  el('search').addEventListener('input', async (e)=>{
-    const q=e.target.value.toLowerCase().trim();
-    const idx=await fetchJSON('/data/games_index.json');
-    renderList(idx.games.filter(g => (`${g.white} ${g.black} ${g.event} ${g.opening} ${g.eco} ${g.date}`).toLowerCase().includes(q)));
+    list.appendChild(div);
   });
 }
 
-function startEngine(){
-  if(engineWorker) return;
-  const workerCode = `
-    let sf=null;
-    self.onmessage=(e)=>{
-      const m=e.data;
-      if(m && m.type==='init'){
-        importScripts('https://cdn.jsdelivr.net/npm/stockfish@16.0.0/src/stockfish.js');
-        sf=Stockfish();
-        sf.onmessage=(line)=>self.postMessage({type:'line', line});
-        sf.postMessage('uci');
-        return;
+function renderMoves(){
+  const ol = $("movesList");
+  ol.innerHTML = "";
+
+  for (let i=0; i<movesSan.length; i++){
+    const li = document.createElement("li");
+    li.textContent = movesSan[i];
+    if (i === moveIndex - 1){
+      li.style.fontWeight = "700";
+      li.style.textDecoration = "underline";
+    }
+    li.addEventListener("click", () => {
+      gotoMove(i+1);
+    });
+    ol.appendChild(li);
+  }
+}
+
+function updateBoard(){
+  if (!board || !chess) return;
+  board.position(chess.fen());
+
+  const hdr = $("gameHeader");
+  if (hdr){
+    const turn = chess.turn() === "w" ? "White to move" : "Black to move";
+    hdr.textContent = `${turn} • Move ${Math.max(1, chess.moveNumber())}`;
+  }
+
+  setStatus(`Ход: ${moveIndex}/${movesSan.length} • FEN: ${chess.fen()}`);
+
+  if (engineEnabled){
+    runEngineForCurrentPosition();
+  }
+}
+
+function gotoMove(n){
+  if (!chess) return;
+  if (n < 0) n = 0;
+  if (n > movesSan.length) n = movesSan.length;
+
+  chess.reset();
+  moveIndex = 0;
+
+  for (let i=0; i<n; i++){
+    const ok = chess.move(movesSan[i], { sloppy: true });
+    if (!ok) break;
+    moveIndex++;
+  }
+
+  renderMoves();
+  updateBoard();
+}
+
+function step(delta){
+  gotoMove(moveIndex + delta);
+}
+
+function initBoard(){
+  chess = new Chess();
+  board = Chessboard("board", {
+    position: "start",
+    draggable: false
+  });
+  updateBoard();
+}
+
+function parsePGNToMoves(pgnText){
+  const c = new Chess();
+  const ok = c.load_pgn(pgnText, { sloppy: true });
+  if (!ok){
+    throw new Error("Не удалось прочитать PGN (проверь формат).");
+  }
+  return c.history(); // SAN list
+}
+
+function parsePGNTags(pgnText){
+  const tags = {};
+  const lines = pgnText.split(/\r?\n/);
+  for (const line of lines){
+    const t = line.trim();
+    if (!t) break;
+    const m = t.match(/^\[(\w+)\s+"(.*)"\]$/);
+    if (m) tags[m[1]] = m[2];
+  }
+  return tags;
+}
+
+async function loadGame(g){
+  $("engineBox").style.display = "none";
+  $("engineOut").textContent = "—";
+  lastEngineFen = "";
+
+  const pgn = await fetchText(`/data/games/${g.file}`);
+  const tags = parsePGNTags(pgn);
+
+  movesSan = parsePGNToMoves(pgn);
+  moveIndex = 0;
+
+  // Reset position
+  chess.reset();
+  updateBoard();
+  renderMoves();
+
+  const w = tags.White || g.white || "White";
+  const b = tags.Black || g.black || "Black";
+  const res = tags.Result || g.result || "—";
+  const ev = tags.Event || g.event || "—";
+  const dt = tags.Date || g.date || g.year || "—";
+
+  $("gameHeader").textContent = `${w} vs ${b} • ${res} • ${ev} • ${dt}`;
+  setStatus(`Загружено: ${movesSan.length} ходов`);
+}
+
+function hookControls(){
+  $("btnStart").addEventListener("click", () => gotoMove(0));
+  $("btnPrev").addEventListener("click", () => step(-1));
+  $("btnNext").addEventListener("click", () => step(1));
+  $("btnEnd").addEventListener("click", () => gotoMove(movesSan.length));
+
+  $("btnFlip").addEventListener("click", () => {
+    if (board) board.flip();
+  });
+
+  $("btnEngine").addEventListener("click", () => {
+    engineEnabled = !engineEnabled;
+    $("engineBox").style.display = engineEnabled ? "block" : "none";
+    if (engineEnabled){
+      ensureEngine();
+      runEngineForCurrentPosition(true);
+    }
+  });
+
+  // Keyboard arrows
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+}
+
+function ensureEngine(){
+  if (engine) return;
+  try{
+    engine = Stockfish(); // from stockfish.js
+    engine.onmessage = (event) => {
+      const line = (typeof event === "string") ? event : event.data;
+      if (!line) return;
+
+      // show useful lines
+      if (line.startsWith("info ")){
+        // keep last few
+        const out = $("engineOut");
+        if (!out) return;
+        out.textContent = line;
       }
-      if(!sf) return;
-      if(m && m.type==='cmd') sf.postMessage(m.cmd);
+      if (line.startsWith("bestmove")){
+        // done
+      }
     };
-  `;
-  const blob=new Blob([workerCode],{type:'application/javascript'});
-  const url=URL.createObjectURL(blob);
-  engineWorker=new Worker(url);
-  engineWorker.onmessage=onEngineLine;
-  engineWorker.postMessage({type:'init'});
+    engine.postMessage("uci");
+    engine.postMessage("setoption name Threads value 2");
+  } catch (e){
+    $("engineOut").textContent = "Engine не загрузился в браузере (проверь, что CDN доступен).";
+  }
 }
 
-function stopEngine(){ if(engineWorker){ engineWorker.terminate(); engineWorker=null; } }
+function runEngineForCurrentPosition(force=false){
+  if (!engineEnabled || !engine || !chess) return;
+  const fen = chess.fen();
+  if (!force && fen === lastEngineFen) return;
+  lastEngineFen = fen;
 
-function requestEval(){
-  if(!engineWorker) return;
-  engineWorker.postMessage({type:'cmd', cmd:'stop'});
-  if(plyIndex===0) engineWorker.postMessage({type:'cmd', cmd:'position startpos'});
-  else engineWorker.postMessage({type:'cmd', cmd:'position fen '+currentFens[plyIndex]});
-  engineWorker.postMessage({type:'cmd', cmd:'go depth 14'});
-}
-
-function onEngineLine(e){
-  const line=(e.data && e.data.type==='line') ? (e.data.line||'') : '';
-  if(!line.startsWith('info') || !line.includes(' pv ')) return;
-  const mcp=line.match(/score\s+cp\s+(-?\d+)/);
-  const mm=line.match(/score\s+mate\s+(-?\d+)/);
-  let evalTxt='';
-  if(mm) evalTxt='Mate '+mm[1];
-  else if(mcp){ const cp=parseInt(mcp[1],10); evalTxt=(cp>=0?'+':'')+(cp/100).toFixed(2); }
-  else return;
-  const pv=line.split(' pv ')[1].trim().split(/\s+/).slice(0,10).join(' ');
-  el('engineEval').textContent=evalTxt;
-  el('enginePV').textContent=pv?('PV: '+pv):'';
+  $("engineOut").textContent = "Думаю…";
+  engine.postMessage("ucinewgame");
+  engine.postMessage("position fen " + fen);
+  // short analysis (fast)
+  engine.postMessage("go depth 14");
 }
 
 async function main(){
-  wire();
+  initBoard();
+  hookControls();
+
+  // Load index
+  let games = [];
   try{
-    const idx=await fetchJSON('/data/games_index.json');
-    renderList(idx.games);
-  }catch(err){
-    el('gameList').innerHTML='<div class="hint">Не нашёл /data/games_index.json. Проверь, что файл загружен.</div>';
+    games = await fetchJSON("/data/games/index.json");
+  } catch (e){
+    $("gamesList").innerHTML = '<div class="meta">Пока нет базы партий. Добавь .pgn в <code>data/games/</code> и запусти генератор index.json.</div>';
+    return;
   }
+
+  if (!Array.isArray(games) || games.length === 0){
+    $("gamesList").innerHTML = '<div class="meta">Пока нет партий. Добавь .pgn в <code>data/games/</code>.</div>';
+    return;
+  }
+
+  renderGamesList(games);
+
+  // auto-load first game
+  const first = games[0];
+  const firstEl = document.querySelector(".game-item");
+  if (firstEl) firstEl.classList.add("active");
+  await loadGame(first);
 }
-document.addEventListener('DOMContentLoaded', main);
+
+document.addEventListener("DOMContentLoaded", main);
