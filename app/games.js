@@ -1,9 +1,3 @@
-/* PGN viewer + light engine analysis (Stockfish in browser)
-   Data source:
-     - data/games/index.json (auto-generated)
-     - data/games/*.pgn
-*/
-
 let board = null;
 let chess = null;
 let movesSan = [];
@@ -15,6 +9,13 @@ let lastEngineFen = "";
 
 function $(id){ return document.getElementById(id); }
 
+function showFatal(msg){
+  const f = $("fatal");
+  if (!f) return;
+  f.style.display = "block";
+  f.textContent = msg;
+}
+
 function setStatus(text){
   const el = $("statusLine");
   if (el) el.textContent = text || "";
@@ -22,24 +23,15 @@ function setStatus(text){
 
 function safeText(x){ return (x === null || x === undefined || x === "") ? "—" : String(x); }
 
-function formatGameTitle(g){
-  const w = safeText(g.white);
-  const b = safeText(g.black);
-  const res = safeText(g.result);
-  const ev = safeText(g.event);
-  const dt = safeText(g.date || g.year);
-  return `${w} vs ${b} • ${res} • ${ev} • ${dt}`;
-}
-
 async function fetchJSON(url){
   const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error("Failed to load " + url);
+  if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
   return await r.json();
 }
 
 async function fetchText(url){
   const r = await fetch(url, { cache: "no-store" });
-  if (!r.ok) throw new Error("Failed to load " + url);
+  if (!r.ok) throw new Error(`HTTP ${r.status} ${url}`);
   return await r.text();
 }
 
@@ -84,9 +76,7 @@ function renderMoves(){
       li.style.fontWeight = "700";
       li.style.textDecoration = "underline";
     }
-    li.addEventListener("click", () => {
-      gotoMove(i+1);
-    });
+    li.addEventListener("click", () => gotoMove(i+1));
     ol.appendChild(li);
   }
 }
@@ -94,18 +84,8 @@ function renderMoves(){
 function updateBoard(){
   if (!board || !chess) return;
   board.position(chess.fen());
-
-  const hdr = $("gameHeader");
-  if (hdr){
-    const turn = chess.turn() === "w" ? "White to move" : "Black to move";
-    hdr.textContent = `${turn} • Move ${Math.max(1, chess.moveNumber())}`;
-  }
-
-  setStatus(`Ход: ${moveIndex}/${movesSan.length} • FEN: ${chess.fen()}`);
-
-  if (engineEnabled){
-    runEngineForCurrentPosition();
-  }
+  setStatus(`Ход: ${moveIndex}/${movesSan.length}`);
+  if (engineEnabled) runEngineForCurrentPosition();
 }
 
 function gotoMove(n){
@@ -126,26 +106,23 @@ function gotoMove(n){
   updateBoard();
 }
 
-function step(delta){
-  gotoMove(moveIndex + delta);
-}
+function step(delta){ gotoMove(moveIndex + delta); }
 
 function initBoard(){
+  if (!window.Chess || !window.Chessboard){
+    showFatal("Chess/Chessboard не загрузились. Проверь блокировщики рекламы (adblock) или сеть.");
+    return;
+  }
   chess = new Chess();
-  board = Chessboard("board", {
-    position: "start",
-    draggable: false
-  });
+  board = Chessboard("board", { position: "start", draggable: false });
   updateBoard();
 }
 
 function parsePGNToMoves(pgnText){
   const c = new Chess();
   const ok = c.load_pgn(pgnText, { sloppy: true });
-  if (!ok){
-    throw new Error("Не удалось прочитать PGN (проверь формат).");
-  }
-  return c.history(); // SAN list
+  if (!ok) throw new Error("Не удалось прочитать PGN (проверь формат).");
+  return c.history();
 }
 
 function parsePGNTags(pgnText){
@@ -161,29 +138,29 @@ function parsePGNTags(pgnText){
 }
 
 async function loadGame(g){
-  $("engineBox").style.display = "none";
-  $("engineOut").textContent = "—";
-  lastEngineFen = "";
+  try{
+    const pgn = await fetchText(`/data/games/${g.file}`);
+    const tags = parsePGNTags(pgn);
 
-  const pgn = await fetchText(`/data/games/${g.file}`);
-  const tags = parsePGNTags(pgn);
+    movesSan = parsePGNToMoves(pgn);
+    moveIndex = 0;
 
-  movesSan = parsePGNToMoves(pgn);
-  moveIndex = 0;
+    chess.reset();
+    updateBoard();
+    renderMoves();
 
-  // Reset position
-  chess.reset();
-  updateBoard();
-  renderMoves();
+    const w = tags.White || g.white || "White";
+    const b = tags.Black || g.black || "Black";
+    const res = tags.Result || g.result || "—";
+    const ev = tags.Event || g.event || "—";
+    const dt = tags.Date || g.date || g.year || "—";
 
-  const w = tags.White || g.white || "White";
-  const b = tags.Black || g.black || "Black";
-  const res = tags.Result || g.result || "—";
-  const ev = tags.Event || g.event || "—";
-  const dt = tags.Date || g.date || g.year || "—";
-
-  $("gameHeader").textContent = `${w} vs ${b} • ${res} • ${ev} • ${dt}`;
-  setStatus(`Загружено: ${movesSan.length} ходов`);
+    $("gameHeader").textContent = `${w} vs ${b} • ${res} • ${ev} • ${dt}`;
+    setStatus(`Загружено: ${movesSan.length} ходов`);
+  } catch (e){
+    showFatal("Ошибка загрузки партии: " + e.message);
+    console.error(e);
+  }
 }
 
 function hookControls(){
@@ -191,10 +168,7 @@ function hookControls(){
   $("btnPrev").addEventListener("click", () => step(-1));
   $("btnNext").addEventListener("click", () => step(1));
   $("btnEnd").addEventListener("click", () => gotoMove(movesSan.length));
-
-  $("btnFlip").addEventListener("click", () => {
-    if (board) board.flip();
-  });
+  $("btnFlip").addEventListener("click", () => board && board.flip());
 
   $("btnEngine").addEventListener("click", () => {
     engineEnabled = !engineEnabled;
@@ -205,7 +179,6 @@ function hookControls(){
     }
   });
 
-  // Keyboard arrows
   window.addEventListener("keydown", (e) => {
     if (e.key === "ArrowLeft") step(-1);
     if (e.key === "ArrowRight") step(1);
@@ -213,28 +186,18 @@ function hookControls(){
 }
 
 function ensureEngine(){
-  if (engine) return;
+  if (engine || !window.Stockfish) return;
   try{
-    engine = Stockfish(); // from stockfish.js
+    engine = Stockfish();
     engine.onmessage = (event) => {
       const line = (typeof event === "string") ? event : event.data;
       if (!line) return;
-
-      // show useful lines
-      if (line.startsWith("info ")){
-        // keep last few
-        const out = $("engineOut");
-        if (!out) return;
-        out.textContent = line;
-      }
-      if (line.startsWith("bestmove")){
-        // done
-      }
+      if (line.startsWith("info ")) $("engineOut").textContent = line;
     };
     engine.postMessage("uci");
     engine.postMessage("setoption name Threads value 2");
   } catch (e){
-    $("engineOut").textContent = "Engine не загрузился в браузере (проверь, что CDN доступен).";
+    $("engineOut").textContent = "Engine не загрузился (CDN блокируется).";
   }
 }
 
@@ -247,7 +210,6 @@ function runEngineForCurrentPosition(force=false){
   $("engineOut").textContent = "Думаю…";
   engine.postMessage("ucinewgame");
   engine.postMessage("position fen " + fen);
-  // short analysis (fast)
   engine.postMessage("go depth 14");
 }
 
@@ -255,27 +217,21 @@ async function main(){
   initBoard();
   hookControls();
 
-  // Load index
-  let games = [];
   try{
-    games = await fetchJSON("/data/games/index.json");
+    const games = await fetchJSON("/data/games/index.json");
+    if (!Array.isArray(games) || games.length === 0){
+      $("gamesList").innerHTML = '<div class="meta">Пока нет партий. Добавь .pgn в <code>data/games/</code>.</div>';
+      return;
+    }
+    renderGamesList(games);
+    const firstEl = document.querySelector(".game-item");
+    if (firstEl) firstEl.classList.add("active");
+    await loadGame(games[0]);
   } catch (e){
-    $("gamesList").innerHTML = '<div class="meta">Пока нет базы партий. Добавь .pgn в <code>data/games/</code> и запусти генератор index.json.</div>';
-    return;
+    $("gamesList").innerHTML = '<div class="meta">Не могу загрузить <code>/data/games/index.json</code>. Проверь, что файл существует в репозитории.</div>';
+    showFatal("Ошибка: " + e.message + ". Проверь, что открывается https://kirillchess.com/data/games/index.json и https://kirillchess.com/app/games.js");
+    console.error(e);
   }
-
-  if (!Array.isArray(games) || games.length === 0){
-    $("gamesList").innerHTML = '<div class="meta">Пока нет партий. Добавь .pgn в <code>data/games/</code>.</div>';
-    return;
-  }
-
-  renderGamesList(games);
-
-  // auto-load first game
-  const first = games[0];
-  const firstEl = document.querySelector(".game-item");
-  if (firstEl) firstEl.classList.add("active");
-  await loadGame(first);
 }
 
 document.addEventListener("DOMContentLoaded", main);
