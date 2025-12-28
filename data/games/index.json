@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "file": "duy_tuong_nguyen_vs_kirill_evenko.pgn",
+    "white": "?",
+    "black": "?",
+    "event": "?",
+    "site": "?",
+    "date": "????.??.??",
+    "round": "?",
+    "result": "*"
+  },
+  {
+    "file": "edison_zhu_vs_kirill_evenko.pgn",
+    "white": "?",
+    "black": "?",
+    "event": "?",
+    "site": "?",
+    "date": "????.??.??",
+    "round": "?",
+    "result": "*"
+  },
+  {
+    "file": "kirill_evenko_vs_farhaan_syed.pgn",
+    "white": "?",
+    "black": "?",
+    "event": "?",
+    "site": "?",
+    "date": "????.??.??",
+    "round": "?",
+    "result": "*"
+  },
+  {
+    "file": "kirill_evenko_vs_miransh_purven_vyas.pgn",
+    "white": "?",
+    "black": "?",
+    "event": "?",
+    "site": "?",
+    "date": "????.??.??",
+    "round": "?",
+    "result": "*"
+  }
+]
