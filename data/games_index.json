@@ -1,0 +1,50 @@
+{
+  "updated_at": "2025-12-28",
+  "count": 4,
+  "games": [
+    {
+      "id": "duy_tuong_nguyen_vs_kirill_evenko.pgn",
+      "file": "/data/games/duy_tuong_nguyen_vs_kirill_evenko.pgn",
+      "white": "?",
+      "black": "?",
+      "event": "?",
+      "date": "????.??.??",
+      "result": "*",
+      "eco": "",
+      "opening": ""
+    },
+    {
+      "id": "edison_zhu__1679_fide__vs_kirill_evenko__1787_fide_.pgn",
+      "file": "/data/games/edison_zhu__1679_fide__vs_kirill_evenko__1787_fide_.pgn",
+      "white": "?",
+      "black": "?",
+      "event": "?",
+      "date": "????.??.??",
+      "result": "*",
+      "eco": "",
+      "opening": ""
+    },
+    {
+      "id": "kirill_evenko__1787_fide__vs_farhaan_syed__1632_fide_.pgn",
+      "file": "/data/games/kirill_evenko__1787_fide__vs_farhaan_syed__1632_fide_.pgn",
+      "white": "?",
+      "black": "?",
+      "event": "?",
+      "date": "????.??.??",
+      "result": "*",
+      "eco": "",
+      "opening": ""
+    },
+    {
+      "id": "kirill_evenko__1787_fide__vs_miransh_purven_vyas__1944_fide_.pgn",
+      "file": "/data/games/kirill_evenko__1787_fide__vs_miransh_purven_vyas__1944_fide_.pgn",
+      "white": "?",
+      "black": "?",
+      "event": "?",
+      "date": "????.??.??",
+      "result": "*",
+      "eco": "",
+      "opening": ""
+    }
+  ]
+}
