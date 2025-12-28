@@ -1,7 +1,7 @@
 
 backend:
   name: github
-  repo: your-username/your-repo  # ← CHANGE THIS
+  repo: aevenko/kirillchess  # ← CHANGE THIS
   branch: main
 
 media_folder: "assets"
