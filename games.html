@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Партии — Kirill Chess</title>
 
-  <!-- Your site styles -->
+  <!-- Your site styles (if present) -->
   <link rel="stylesheet" href="/css/styles.css" />
 
-  <!-- Chessboard / helpers (CDN) -->
+  <!-- Chessboard CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/www/css/chessboard.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/www/css/chessboard.min.css">
+
   <style>
-    /* Keep it clean and consistent with your site */
     .games-wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
     .games-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom: 18px; }
     .games-title { font-size: 28px; margin: 0; }
@@ -35,7 +36,44 @@
     .engine pre { white-space: pre-wrap; word-break: break-word; }
     .topnav { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom: 14px; }
     .topnav a { text-decoration:none; }
+    .warn { background: rgba(255,100,100,0.08); border: 1px solid rgba(255,100,100,0.25); padding: 10px 12px; border-radius: 12px; }
+    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
   </style>
+
+  <script>
+    // Tiny loader with fallback CDN
+    function loadScript(url){
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ensureLibs(){
+      // chess.js
+      if (!window.Chess){
+        try { await loadScript("https://cdn.jsdelivr.net/npm/chess.js@1.0.0/chess.min.js"); }
+        catch { await loadScript("https://unpkg.com/chess.js@1.0.0/chess.min.js"); }
+      }
+      // chessboard.js
+      if (!window.Chessboard){
+        try { await loadScript("https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/www/js/chessboard.min.js"); }
+        catch { await loadScript("https://unpkg.com/chessboardjs@1.0.0/www/js/chessboard.min.js"); }
+      }
+      // stockfish (optional)
+      if (!window.Stockfish){
+        try { await loadScript("https://cdn.jsdelivr.net/npm/stockfish@16.0.0/src/stockfish.js"); }
+        catch {
+          try { await loadScript("https://unpkg.com/stockfish@16.0.0/src/stockfish.js"); }
+          catch {}
+        }
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -51,6 +89,8 @@
       <h1 class="games-title">Партии</h1>
       <div class="meta">Добавляй новые .pgn в <code>data/games/</code> — список обновится автоматически.</div>
     </div>
+
+    <div id="fatal" class="warn" style="display:none;"></div>
 
     <div class="games-grid">
       <div class="card">
@@ -77,7 +117,7 @@
             <ol id="movesList"></ol>
 
             <div class="engine" id="engineBox" style="display:none;">
-              <div class="meta" style="margin: 10px 0 6px;">Engine (Stockfish) — быстрая оценка текущей позиции</div>
+              <div class="meta" style="margin: 10px 0 6px;">Engine (Stockfish) — оценка текущей позиции</div>
               <pre id="engineOut">—</pre>
             </div>
           </div>
@@ -87,14 +127,21 @@
     </div>
   </div>
 
-  <!-- Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chess.js@1.0.0/chess.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chessboardjs@1.0.0/www/js/chessboard.min.js"></script>
-
-  <!-- Stockfish (WASM build via CDN) -->
-  <script src="https://cdn.jsdelivr.net/npm/stockfish@16.0.0/src/stockfish.js"></script>
-
-  <!-- App -->
-  <script src="/app/games.js"></script>
+  <script>
+    (async () => {
+      try{
+        await ensureLibs();
+      } catch(e){
+        const f = document.getElementById('fatal');
+        f.style.display = 'block';
+        f.textContent = "Не удалось загрузить библиотеки (Chess/Chessboard). Проверь, не блокирует ли браузер CDN (adblock) или сеть.";
+        console.error(e);
+      }
+      const s = document.createElement('script');
+      s.src = "/app/games.js";
+      s.async = true;
+      document.body.appendChild(s);
+    })();
+  </script>
 </body>
 </html>
