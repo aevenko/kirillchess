@@ -1,8 +1,8 @@
 {
-  "updated_at": "",
+  "updated_at": "2025-12-28",
   "fide": {
     "id": "2666243",
-    "standard": null,
+    "standard": 1722,
     "rapid": null,
     "blitz": null
   },
@@ -13,8 +13,8 @@
   },
   "fqe": {
     "id": "109477",
-    "lente": null,
-    "semi_rapide": null,
-    "rapide": null
+    "lente": 1591,
+    "semi_rapide": 1556,
+    "rapide": 1229
   }
 }
