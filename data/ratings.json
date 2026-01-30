@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-01-29",
+  "updated_at": "2026-01-30",
   "fide": {
     "id": "2666243",
     "standard": 1723,
@@ -14,7 +14,7 @@
   "fqe": {
     "id": "109477",
     "lente": 1563,
-    "semi_rapide": 1556,
+    "semi_rapide": 1573,
     "rapide": 1229
   }
 }
