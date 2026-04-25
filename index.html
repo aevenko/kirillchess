@@ -56,7 +56,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 /* Hero right */
 .hero-right{background:var(--dark);position:relative;overflow:hidden;display:flex;align-items:flex-end;}
 .hero-right::before{content:'♟';position:absolute;font-size:32rem;color:rgba(201,168,76,0.05);right:-4rem;bottom:-4rem;line-height:1;pointer-events:none;}
-.hero-img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;opacity:0.82;mix-blend-mode:luminosity;}
+.hero-img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block;}
 .hero-quote{position:absolute;bottom:2rem;left:2rem;right:2rem;font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:rgba(245,240,232,0.55);border-left:2px solid var(--gold);padding-left:1rem;line-height:1.5;}
 
 /* CHESS BOARD STRIP */
@@ -125,6 +125,10 @@ footer{background:var(--brown);color:var(--cream);padding:3rem 4rem;display:flex
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
+/* ADMIN BUTTON */
+.admin-btn{background:transparent;border:1px solid rgba(201,168,76,0.2);border-radius:4px;padding:0.35rem 0.75rem;font-family:"DM Mono",monospace;font-size:0.68rem;color:var(--muted);text-decoration:none;transition:all 0.2s;letter-spacing:0.05em;}
+.admin-btn:hover{border-color:var(--gold);color:var(--gold);}
+
 /* MOBILE */
 @media(max-width:900px){
   nav{padding:1rem 1.5rem;}
@@ -154,6 +158,7 @@ footer{background:var(--brown);color:var(--cream);padding:3rem 4rem;display:flex
     <li><a href="tournaments-upcoming.html">Предстоящие</a></li>
     <li><a href="contact.html">Контакты</a></li>
   </ul>
+  <a href="admin/index.html" class="admin-btn">🔒</a>
   <button class="nav-burger" id="burger" onclick="toggleMenu()">
     <span></span><span></span><span></span>
   </button>
@@ -292,5 +297,7 @@ function toggleMenu(){
   document.getElementById('nav-menu').classList.toggle('open');
 }
 </script>
+
+
 </body>
 </html>
