@@ -142,6 +142,7 @@ textarea.inp{resize:vertical;min-height:100px;line-height:1.5;}
       <div class="nav-item" onclick="show('ratings')"><span>★</span> Рейтинги</div>
       <div class="nav-item" onclick="show('about')"><span>✎</span> О Кирилле</div>
       <div class="nav-item" onclick="show('photos')"><span>◻</span> Фото</div>
+      <div class="nav-item" onclick="show('gallery')"><span>⊞</span> Галерея</div>
     </div>
 
     <div class="main">
@@ -281,6 +282,37 @@ textarea.inp{resize:vertical;min-height:100px;line-height:1.5;}
         </div>
       </div>
 
+      <!-- GALLERY -->
+      <div class="panel" id="panel-gallery">
+        <div class="page-title">Галерея</div>
+        <div class="page-sub">Управление фотографиями на сайте</div>
+        <div class="card">
+          <div class="card-title">Добавить фото</div>
+          <div class="form-grid">
+            <div class="form-group"><div class="lbl">Название</div><input class="inp" id="g-title" placeholder="Tournoi de Montréal 2025"></div>
+            <div class="form-group"><div class="lbl">Дата</div><input class="inp" id="g-date" placeholder="апрель 2025"></div>
+            <div class="form-group"><div class="lbl">Категория</div>
+              <select class="inp" id="g-cat">
+                <option value="tournament">Турнир</option>
+                <option value="training">Тренировка</option>
+                <option value="family">Семья</option>
+                <option value="other">Разное</option>
+              </select>
+            </div>
+            <div class="form-group"><div class="lbl">Файл фото</div>
+              <input type="file" id="g-file" accept="image/*" class="inp" style="padding:0.6rem;">
+            </div>
+          </div>
+          <div class="actions"><button class="btn-save" onclick="addGalleryPhoto()">📷 Загрузить и добавить</button></div>
+          <div class="status" id="g-add-status"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Все фото (<span id="g-count">0</span>)</div>
+          <div id="g-list"><div style="color:var(--muted);font-size:0.85rem;">Загрузка...</div></div>
+          <div class="status" id="g-list-status"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -291,6 +323,7 @@ const RATINGS_FILE = 'data/ratings.json';
 const PLAYED_FILE  = 'data/past_tournaments.json';
 const UPCOMING_FILE = 'data/upcoming_tournaments.json';
 const ABOUT_FILE   = 'data/about.json';
+const GALLERY_FILE  = 'data/gallery.json';
 
 let TOKEN = '';
 let ratingsData  = { fide:{standard:null}, cfc:{regular:null}, fqe:{lente:null} };
@@ -387,6 +420,11 @@ async function loadAll() {
     if (uf) { upcomingData = JSON.parse(decode(uf)); upcomingSHA = uf.sha; }
     else upcomingData = [];
 
+    // Gallery
+    const gf = await ghGet(GALLERY_FILE);
+    if (gf) { galleryData = JSON.parse(decode(gf)); gallerySHA = gf.sha; }
+    else galleryData = { photos:[] };
+
     // About
     const af = await ghGet(ABOUT_FILE);
     if (af) { aboutData = JSON.parse(decode(af)); aboutSHA = af.sha; }
@@ -429,6 +467,7 @@ function renderAll() {
   renderUpcoming();
 
   // About
+  renderGalleryAdmin();
   document.getElementById('about-bio').value   = aboutData.bio   || '';
   document.getElementById('about-motto').value = aboutData.motto || '';
 }
@@ -581,6 +620,59 @@ async function uploadMainPhoto(event) {
 }
 function toB64(file) {
   return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result); r.onerror=rej; r.readAsDataURL(file); });
+}
+
+
+// ── GALLERY ──
+function renderGalleryAdmin() {
+  const photos = galleryData.photos || [];
+  document.getElementById('g-count').textContent = photos.length;
+  const el = document.getElementById('g-list');
+  if (!photos.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;">Нет фото</div>'; return; }
+  el.innerHTML = photos.map((p,i) => `
+    <div class="t-item">
+      <img src="${p.src}" style="width:48px;height:48px;object-fit:cover;border-radius:4px;flex-shrink:0;" onerror="this.style.display='none'">
+      <div style="flex:1;min-width:0;">
+        <div class="t-name">${p.title||''}</div>
+        <div class="t-meta">${p.date||''} · ${p.category||''}</div>
+      </div>
+      <button class="btn-del" onclick="delGalleryPhoto(${i})">✕</button>
+    </div>`).join('');
+}
+
+async function addGalleryPhoto() {
+  const file = document.getElementById('g-file').files[0];
+  if (!file) return showStatus('g-add-status','err','Выбери файл фото');
+  const title = document.getElementById('g-title').value.trim();
+  const date  = document.getElementById('g-date').value.trim();
+  const cat   = document.getElementById('g-cat').value;
+  showStatus('g-add-status','loading','⏳ Загружаю фото...');
+  try {
+    const b64 = await toB64(file);
+    const filename = 'assets/photos/' + Date.now() + '_' + file.name.replace(/[^a-z0-9.]/gi,'_');
+    const existingFile = await ghGet(filename);
+    await ghPutBinary(filename, b64.split(',')[1], 'Добавление фото в галерею', existingFile?.sha || null);
+    if (!galleryData.photos) galleryData.photos = [];
+    galleryData.photos.unshift({ src: filename, title, date, category: cat });
+    const result = await ghPut(GALLERY_FILE, JSON.stringify(galleryData, null, 2), 'Обновление галереи', gallerySHA);
+    gallerySHA = result.content.sha;
+    renderGalleryAdmin();
+    document.getElementById('g-file').value = '';
+    document.getElementById('g-title').value = '';
+    document.getElementById('g-date').value = '';
+    showStatus('g-add-status','ok','✓ Фото добавлено в галерею!');
+  } catch(e) { showStatus('g-add-status','err','✕ ' + e.message); }
+}
+
+async function delGalleryPhoto(i) {
+  if (!confirm('Удалить фото из галереи?')) return;
+  galleryData.photos.splice(i,1);
+  try {
+    const result = await ghPut(GALLERY_FILE, JSON.stringify(galleryData, null, 2), 'Удаление фото из галереи', gallerySHA);
+    gallerySHA = result.content.sha;
+    renderGalleryAdmin();
+    showStatus('g-list-status','ok','✓ Фото удалено');
+  } catch(e) { showStatus('g-list-status','err','✕ ' + e.message); }
 }
 
 // ── UTILS ──
