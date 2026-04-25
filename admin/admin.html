@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KirillChess — Панель администратора</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0d0b;
+    --surface: #1a1612;
+    --surface2: #221e19;
+    --border: rgba(201,168,76,0.15);
+    --gold: #c9a84c;
+    --gold-dim: rgba(201,168,76,0.6);
+    --cream: #f5f0e8;
+    --text: #e8e0d0;
+    --muted: #6b5d4f;
+    --red: #c0392b;
+    --green: #27ae60;
+    --input-bg: #110f0c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.04) 0%, transparent 60%),
+      var(--bg);
+  }
+  .login-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.02em;
+  }
+  .login-logo span { color: var(--gold); }
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2.5rem;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  .login-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+  }
+  .login-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+  .field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+  }
+  .field-input {
+    width: 100%;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .field-input:focus { border-color: var(--gold); }
+  .field-input::placeholder { color: var(--muted); }
+  .hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .hint a { color: var(--gold-dim); text-decoration: none; }
+  .hint a:hover { color: var(--gold); }
+  .btn-primary {
+    background: var(--gold);
+    color: #0f0d0b;
+    border: none;
+    border-radius: 4px;
+    padding: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-primary:hover { background: #e8cc7a; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  #login-error {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    display: none;
+  }
+
+  /* ── MAIN APP ── */
+  #app { display: none; }
+
+  /* Top bar */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .topbar-logo span { color: var(--gold); }
+  .topbar-right { display: flex; align-items: center; gap: 1rem; }
+  .topbar-repo {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.75rem;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 56px);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 0;
+  }
+  .sidebar-section {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 1.2rem;
+    margin: 1.2rem 0 0.5rem;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.2rem;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-item:hover { color: var(--text); background: var(--surface2); }
+  .sidebar-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(201,168,76,0.05); }
+  .sidebar-icon { font-size: 1rem; width: 1.2rem; text-align: center; }
+
+  /* Main content */
+  .main { padding: 2rem; overflow-y: auto; }
+
+  /* Panel */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .page-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .card-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+
+  /* Form grid */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .form-full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  textarea.field-input {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+  select.field-input {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b5d4f'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+
+  /* Action buttons */
+  .actions { display: flex; gap: 0.75rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .btn-save {
+    background: var(--gold);
+    color: #0f0d0b;
+    border: none;
+    border-radius: 4px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-save:hover { background: #e8cc7a; }
+  .btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-danger {
+    background: transparent;
+    border: 1px solid rgba(192,57,43,0.3);
+    color: #e74c3c;
+    border-radius: 4px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .btn-danger:hover { background: rgba(192,57,43,0.1); }
+
+  /* Status message */
+  .status-msg {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  .status-msg.success { background: rgba(39,174,96,0.1); border: 1px solid rgba(39,174,96,0.3); color: #2ecc71; }
+  .status-msg.error { background: rgba(192,57,43,0.1); border: 1px solid rgba(192,57,43,0.3); color: #e74c3c; }
+  .status-msg.loading { background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2); color: var(--gold); }
+
+  /* Tournament list */
+  .tournament-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .tournament-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: border-color 0.2s;
+  }
+  .tournament-item:hover { border-color: rgba(201,168,76,0.3); }
+  .ti-left { flex: 1; min-width: 0; }
+  .ti-name {
+    font-size: 0.88rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ti-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+  }
+  .ti-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+  .ti-actions { display: flex; gap: 0.4rem; }
+  .btn-icon {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 3px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-icon:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-icon.del:hover { border-color: #e74c3c; color: #e74c3c; }
+
+  /* Ratings grid */
+  .ratings-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+  .rating-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .rating-card-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+  .rating-card-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+
+  /* Stats bar */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .stat-box-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--gold);
+    display: block;
+  }
+  .stat-box-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* Photo section */
+  .photo-drop {
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .photo-drop:hover { border-color: var(--gold); }
+  .photo-drop-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+  .photo-drop-text { color: var(--muted); font-size: 0.85rem; }
+  .photo-drop-text span { color: var(--gold); cursor: pointer; }
+  #photo-input { display: none; }
+  .photo-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  .photo-thumb {
+    aspect-ratio: 1;
+    background: var(--surface2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border);
+  }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-thumb-del {
+    position: absolute;
+    top: 4px; right: 4px;
+    background: rgba(0,0,0,0.7);
+    color: #e74c3c;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 5px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: none;
+  }
+  .photo-thumb:hover .photo-thumb-del { display: block; }
+
+  /* About textarea */
+  .bio-textarea {
+    min-height: 140px;
+  }
+
+  /* Upcoming */
+  .upcoming-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .upcoming-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* Token info */
+  .token-info {
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 6px;
+    padding: 1rem 1.2rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .token-info strong { color: var(--gold-dim); }
+
+  @media (max-width: 768px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .stats-bar { grid-template-columns: 1fr 1fr; }
+    .ratings-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="login-screen">
+  <div class="login-logo">Kirill<span>Chess</span></div>
+  <div class="login-card">
+    <div class="login-title">Панель администратора</div>
+    <h2>Войти</h2>
+
+    <div class="token-info">
+      Нужен <strong>GitHub Personal Access Token</strong>.<br>
+      Создай на <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--gold)">github.com/settings/tokens/new</a> — выбери <strong>repo</strong> и <strong>Contents: Read & write</strong>.
+    </div>
+
+    <div class="form-group">
+      <div class="field-label">GitHub Token</div>
+      <input type="password" class="field-input" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    </div>
+
+    <div id="login-error"></div>
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Войти →</button>
+
+    <div class="hint">
+      Токен хранится только в браузере (localStorage) и никуда не передаётся кроме GitHub API.
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-logo">Kirill<span>Chess</span> <span style="color:var(--muted);font-size:0.75rem;font-family:'DM Mono',monospace;margin-left:0.5rem">/ admin</span></div>
+    <div class="topbar-right">
+      <div class="topbar-repo" id="repo-label">aevenko/kirillchess</div>
+      <a href="https://kirillchess.com" target="_blank" class="btn-logout">↗ Сайт</a>
+      <button class="btn-logout" onclick="doLogout()">Выйти</button>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-section">Контент</div>
+      <div class="sidebar-item active" onclick="showPanel('dashboard')">
+        <span class="sidebar-icon">◈</span> Обзор
+      </div>
+      <div class="sidebar-item" onclick="showPanel('tournaments-played')">
+        <span class="sidebar-icon">♟</span> Сыгранные
+      </div>
+      <div class="sidebar-item" onclick="showPanel('tournaments-upcoming')">
+        <span class="sidebar-icon">◷</span> Предстоящие
+      </div>
+      <div class="sidebar-section">Профиль</div>
+      <div class="sidebar-item" onclick="showPanel('ratings')">
+        <span class="sidebar-icon">★</span> Рейтинги
+      </div>
+      <div class="sidebar-item" onclick="showPanel('about')">
+        <span class="sidebar-icon">✎</span> О Кирилле
+      </div>
+      <div class="sidebar-item" onclick="showPanel('photos')">
+        <span class="sidebar-icon">◻</span> Фото
+      </div>
+    </div>
+
+    <!-- Main -->
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="page-title">Добро пожаловать, Антон</div>
+        <div class="page-sub">kirillchess.com · Панель управления</div>
+
+        <div class="stats-bar" id="stats-bar">
+          <div class="stat-box"><span class="stat-box-num" id="stat-played">—</span><div class="stat-box-label">Сыграно турниров</div></div>
+          <div class="stat-box"><span class="stat-box-num" id="stat-upcoming">—</span><div class="stat-box-label">Предстоящих</div></div>
+          <div class="stat-box"><span class="stat-box-num" id="stat-fide">—</span><div class="stat-box-label">FIDE рейтинг</div></div>
+          <div class="stat-box"><span class="stat-box-num" id="stat-wins">—</span><div class="stat-box-label">Призовых мест</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Быстрые действия</div>
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+            <button class="btn-save" onclick="showPanel('tournaments-played')">+ Добавить турнир</button>
+            <button class="btn-secondary" onclick="showPanel('ratings')">Обновить рейтинг</button>
+            <button class="btn-secondary" onclick="showPanel('tournaments-upcoming')">+ Предстоящий турнир</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Последние турниры</div>
+          <div id="recent-list" style="color:var(--muted);font-size:0.85rem">Загрузка...</div>
+        </div>
+      </div>
+
+      <!-- PLAYED TOURNAMENTS -->
+      <div class="panel" id="panel-tournaments-played">
+        <div class="page-title">Сыгранные турниры</div>
+        <div class="page-sub">Добавляй новые турниры и результаты</div>
+
+        <!-- Add form -->
+        <div class="card">
+          <div class="card-title">Добавить турнир</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <div class="field-label">Название турнира</div>
+              <input type="text" class="field-input" id="t-name" placeholder="Championnat ouvert de Montréal">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Город</div>
+              <input type="text" class="field-input" id="t-city" placeholder="Монреаль">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Дата (например: 5 апр или 17–21 май)</div>
+              <input type="text" class="field-input" id="t-date" placeholder="25 апр">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Результат (очки)</div>
+              <input type="text" class="field-input" id="t-score" placeholder="3.5/5">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Место</div>
+              <input type="text" class="field-input" id="t-place" placeholder="4/32">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Флаг (если международный)</div>
+              <input type="text" class="field-input" id="t-flag" placeholder="🌎 (необязательно)">
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-save" onclick="addTournament()">Добавить турнир</button>
+            <button class="btn-secondary" onclick="clearTournamentForm()">Очистить</button>
+          </div>
+          <div class="status-msg" id="t-status"></div>
+        </div>
+
+        <!-- List -->
+        <div class="card">
+          <div class="card-title">Все турниры (<span id="t-count">0</span>)</div>
+          <div class="tournament-list" id="tournament-list">
+            <div style="color:var(--muted);font-size:0.85rem">Загрузка...</div>
+          </div>
+          <button class="btn-save" onclick="saveTournaments()" id="save-tournaments-btn" style="display:none">
+            💾 Сохранить изменения на сайт
+          </button>
+          <div class="status-msg" id="tlist-status"></div>
+        </div>
+      </div>
+
+      <!-- UPCOMING TOURNAMENTS -->
+      <div class="panel" id="panel-tournaments-upcoming">
+        <div class="page-title">Предстоящие турниры</div>
+        <div class="page-sub">Анонсы турниров которые ещё впереди</div>
+
+        <div class="card">
+          <div class="card-title">Добавить предстоящий турнир</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <div class="field-label">Название</div>
+              <input type="text" class="field-input" id="u-name" placeholder="Championnat de Laval">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Город</div>
+              <input type="text" class="field-input" id="u-city" placeholder="Laval, QC">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Дата</div>
+              <input type="text" class="field-input" id="u-date" placeholder="15 июн 2025">
+            </div>
+            <div class="form-group">
+              <div class="field-label">Статус</div>
+              <select class="field-input" id="u-status">
+                <option value="Подтверждено">Подтверждено</option>
+                <option value="Планируется">Планируется</option>
+                <option value="Регистрация открыта">Регистрация открыта</option>
+              </select>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-save" onclick="addUpcoming()">Добавить</button>
+          </div>
+          <div class="status-msg" id="u-status-msg"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Список предстоящих</div>
+          <div id="upcoming-list"><div style="color:var(--muted);font-size:0.85rem">Загрузка...</div></div>
+          <div style="margin-top:1rem">
+            <button class="btn-save" onclick="saveUpcoming()" id="save-upcoming-btn" style="display:none">
+              💾 Сохранить на сайт
+            </button>
+          </div>
+          <div class="status-msg" id="ulist-status"></div>
+        </div>
+      </div>
+
+      <!-- RATINGS -->
+      <div class="panel" id="panel-ratings">
+        <div class="page-title">Рейтинги</div>
+        <div class="page-sub">Обновляй рейтинги после каждого турнира</div>
+
+        <div class="card">
+          <div class="card-title">Текущие рейтинги</div>
+          <div class="ratings-grid" style="margin-bottom:1.5rem">
+            <div class="rating-card">
+              <div class="rating-card-label">FIDE</div>
+              <span class="rating-card-num" id="display-fide">—</span>
+            </div>
+            <div class="rating-card">
+              <div class="rating-card-label">CFC</div>
+              <span class="rating-card-num" id="display-cfc">—</span>
+            </div>
+            <div class="rating-card">
+              <div class="rating-card-label">FQE</div>
+              <span class="rating-card-num" id="display-fqe">—</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+          <div class="card-title" style="margin-top:0">Обновить рейтинги</div>
+          <div class="form-grid three">
+            <div class="form-group">
+              <div class="field-label">FIDE рейтинг</div>
+              <input type="number" class="field-input" id="r-fide" placeholder="1787">
+            </div>
+            <div class="form-group">
+              <div class="field-label">CFC рейтинг</div>
+              <input type="number" class="field-input" id="r-cfc" placeholder="1526">
+            </div>
+            <div class="form-group">
+              <div class="field-label">FQE рейтинг</div>
+              <input type="number" class="field-input" id="r-fqe" placeholder="1524">
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn-save" onclick="saveRatings()">💾 Сохранить рейтинги</button>
+          </div>
+          <div class="status-msg" id="r-status"></div>
+        </div>
+      </div>
+
+      <!-- ABOUT -->
+      <div class="panel" id="panel-about">
+        <div class="page-title">О Кирилле</div>
+        <div class="page-sub">Текст биографии на сайте</div>
+
+        <div class="card">
+          <div class="card-title">Биография</div>
+          <div class="form-group">
+            <div class="field-label">Текст (можно HTML)</div>
+            <textarea class="field-input bio-textarea" id="about-text" placeholder="Кирилл открыл для себя шахматы в 5 лет..."></textarea>
+          </div>
+          <div class="form-group" style="margin-top:1rem">
+            <div class="field-label">Девиз / цитата</div>
+            <input type="text" class="field-input" id="about-motto" placeholder="Just make a move">
+          </div>
+          <div class="actions">
+            <button class="btn-save" onclick="saveAbout()">💾 Сохранить</button>
+          </div>
+          <div class="status-msg" id="about-status"></div>
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div class="panel" id="panel-photos">
+        <div class="page-title">Фото</div>
+        <div class="page-sub">Загрузка фотографий на сайт</div>
+
+        <div class="card">
+          <div class="card-title">Загрузить фото</div>
+          <div class="photo-drop" onclick="document.getElementById('photo-input').click()">
+            <div class="photo-drop-icon">📷</div>
+            <div class="photo-drop-text">Перетащи фото сюда или <span>выбери файл</span></div>
+            <div style="font-size:0.75rem;color:var(--muted);margin-top:0.5rem">JPG, PNG · до 5MB</div>
+          </div>
+          <input type="file" id="photo-input" accept="image/*" multiple onchange="handlePhotoSelect(event)">
+          <div id="photo-upload-preview" class="photo-preview"></div>
+          <div class="status-msg" id="photo-status"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Главное фото (kirill.jpg)</div>
+          <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
+            <img src="https://kirillchess.com/kirill.jpg" style="width:120px;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--border)" onerror="this.style.display='none'">
+            <div>
+              <div style="font-size:0.85rem;color:var(--muted);margin-bottom:0.75rem">Текущее главное фото Кирилла</div>
+              <button class="btn-secondary" onclick="document.getElementById('main-photo-input').click()">Заменить фото</button>
+              <input type="file" id="main-photo-input" accept="image/*" style="display:none" onchange="uploadMainPhoto(event)">
+            </div>
+          </div>
+          <div class="status-msg" id="main-photo-status"></div>
+        </div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /layout -->
+</div><!-- /app -->
+
+<script>
+// ══ CONFIG ══
+const REPO = 'aevenko/kirillchess';
+const DATA_FILE = 'data/tournaments.json';
+const ABOUT_FILE = 'data/about.json';
+
+let TOKEN = '';
+let tournamentData = null;
+let upcomingData = [];
+let aboutData = {};
+let dirty = false;
+
+// ══ LOGIN ══
+function doLogin() {
+  const t = document.getElementById('token-input').value.trim();
+  if (!t) return showLoginError('Введи токен');
+  const btn = document.getElementById('login-btn');
+  btn.disabled = true;
+  btn.textContent = 'Проверяю...';
+
+  fetch(`https://api.github.com/repos/${REPO}`, {
+    headers: { Authorization: `token ${t}` }
+  })
+  .then(r => {
+    if (!r.ok) throw new Error('Неверный токен или нет доступа к репозиторию');
+    return r.json();
+  })
+  .then(() => {
+    TOKEN = t;
+    localStorage.setItem('kc_token', t);
+    showApp();
+  })
+  .catch(e => {
+    showLoginError(e.message);
+    btn.disabled = false;
+    btn.textContent = 'Войти →';
+  });
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.style.display = 'block';
+  el.textContent = '✕ ' + msg;
+}
+
+function doLogout() {
+  localStorage.removeItem('kc_token');
+  TOKEN = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+}
+
+// Auto-login
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('kc_token');
+  if (saved) {
+    document.getElementById('token-input').value = saved;
+    TOKEN = saved;
+    showApp();
+  }
+  document.getElementById('token-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  loadAllData();
+}
+
+// ══ PANELS ══
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(s => {
+    if (s.getAttribute('onclick') && s.getAttribute('onclick').includes(name)) s.classList.add('active');
+  });
+}
+
+// ══ GITHUB API ══
+async function getFile(path) {
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    headers: { Authorization: `token ${TOKEN}` }
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error('Ошибка при получении файла: ' + path);
+  return r.json();
+}
+
+async function putFile(path, content, message, sha) {
+  const body = {
+    message,
+    content: btoa(unescape(encodeURIComponent(content))),
+  };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) {
+    const err = await r.json();
+    throw new Error(err.message || 'Ошибка сохранения');
+  }
+  return r.json();
+}
+
+async function putBinaryFile(path, base64content, message, sha) {
+  const body = { message, content: base64content };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error('Ошибка загрузки файла');
+  return r.json();
+}
+
+// ══ LOAD DATA ══
+async function loadAllData() {
+  try {
+    // Load tournaments
+    const tf = await getFile(DATA_FILE);
+    if (tf) {
+      const raw = decodeURIComponent(escape(atob(tf.content.replace(/\n/g,''))));
+      tournamentData = JSON.parse(raw);
+      tournamentData._sha = tf.sha;
+    } else {
+      tournamentData = { kpis: { fide: '', cfc: '', fqe: '' }, played: [], upcoming: [] };
+    }
+
+    // Load about
+    const af = await getFile(ABOUT_FILE);
+    if (af) {
+      const raw = decodeURIComponent(escape(atob(af.content.replace(/\n/g,''))));
+      aboutData = JSON.parse(raw);
+      aboutData._sha = af.sha;
+    } else {
+      aboutData = { bio: '', motto: '' };
+    }
+
+    renderAll();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function renderAll() {
+  if (!tournamentData) return;
+  const played = tournamentData.played || [];
+  const upcoming = tournamentData.upcoming || [];
+  const kpis = tournamentData.kpis || {};
+
+  // Stats
+  document.getElementById('stat-played').textContent = played.length;
+  document.getElementById('stat-upcoming').textContent = upcoming.length;
+  document.getElementById('stat-fide').textContent = kpis.fide || '—';
+  const wins = played.filter(t => t.place && t.place.startsWith('1/')).length;
+  document.getElementById('stat-wins').textContent = wins;
+
+  // Ratings display
+  document.getElementById('display-fide').textContent = kpis.fide || '—';
+  document.getElementById('display-cfc').textContent = kpis.cfc || '—';
+  document.getElementById('display-fqe').textContent = kpis.fqe || '—';
+  document.getElementById('r-fide').value = kpis.fide || '';
+  document.getElementById('r-cfc').value = kpis.cfc || '';
+  document.getElementById('r-fqe').value = kpis.fqe || '';
+
+  // Recent list (dashboard)
+  const recent = played.slice(0, 4);
+  document.getElementById('recent-list').innerHTML = recent.length
+    ? recent.map(t => `<div style="padding:0.5rem 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:0.85rem">${t.name}</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--gold)">${t.score || ''} · ${t.place || ''}</span>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:0.85rem">Нет данных</div>';
+
+  // Tournament list
+  renderTournamentList(played);
+
+  // Upcoming list
+  renderUpcomingList(upcoming);
+
+  // About
+  document.getElementById('about-text').value = aboutData.bio || '';
+  document.getElementById('about-motto').value = aboutData.motto || '';
+}
+
+function renderTournamentList(played) {
+  const el = document.getElementById('tournament-list');
+  document.getElementById('t-count').textContent = played.length;
+  if (!played.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.85rem">Нет турниров</div>'; return; }
+  el.innerHTML = played.map((t, i) => `
+    <div class="tournament-item">
+      <div class="ti-left">
+        <div class="ti-name">${t.name} ${t.flag || ''}</div>
+        <div class="ti-meta">${t.date || ''} · ${t.city || ''}</div>
+      </div>
+      <div class="ti-score">${t.score || ''}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--muted)">${t.place || ''}</div>
+      <div class="ti-actions">
+        <button class="btn-icon del" onclick="deleteTournament(${i})">✕</button>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('save-tournaments-btn').style.display = 'block';
+}
+
+function renderUpcomingList(upcoming) {
+  const el = document.getElementById('upcoming-list');
+  if (!upcoming.length) { el.innerHTML = '<div style="color:var(--muted);font-size:0.85rem">Нет предстоящих турниров</div>'; return; }
+  el.innerHTML = upcoming.map((t, i) => `
+    <div class="upcoming-item">
+      <div>
+        <div style="font-size:0.88rem;font-weight:500">${t.name}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:0.2rem">${t.date} · ${t.city}</div>
+      </div>
+      <div class="upcoming-badge">${t.status || 'Подтверждено'}</div>
+      <button class="btn-icon del" onclick="deleteUpcoming(${i})">✕</button>
+    </div>
+  `).join('');
+  document.getElementById('save-upcoming-btn').style.display = 'block';
+}
+
+// ══ TOURNAMENTS ══
+function addTournament() {
+  const name = document.getElementById('t-name').value.trim();
+  const city = document.getElementById('t-city').value.trim();
+  const date = document.getElementById('t-date').value.trim();
+  const score = document.getElementById('t-score').value.trim();
+  const place = document.getElementById('t-place').value.trim();
+  const flag = document.getElementById('t-flag').value.trim();
+  if (!name || !date) return showStatus('t-status', 'error', 'Заполни название и дату');
+
+  if (!tournamentData.played) tournamentData.played = [];
+  tournamentData.played.unshift({ name, city, date, score, place, flag });
+  renderTournamentList(tournamentData.played);
+  renderAll();
+  clearTournamentForm();
+  showStatus('t-status', 'success', '✓ Турнир добавлен. Нажми "Сохранить изменения" чтобы опубликовать.');
+}
+
+function deleteTournament(i) {
+  if (!confirm('Удалить этот турнир?')) return;
+  tournamentData.played.splice(i, 1);
+  renderTournamentList(tournamentData.played);
+}
+
+async function saveTournaments() {
+  showStatus('tlist-status', 'loading', '⏳ Сохраняю на GitHub...');
+  try {
+    const data = { ...tournamentData };
+    const sha = data._sha;
+    delete data._sha;
+    const json = JSON.stringify(data, null, 2);
+    const result = await putFile(DATA_FILE, json, 'Обновление турниров через admin panel', sha);
+    tournamentData._sha = result.content.sha;
+    showStatus('tlist-status', 'success', '✓ Сохранено! Сайт обновится через ~1 минуту.');
+  } catch(e) {
+    showStatus('tlist-status', 'error', '✕ Ошибка: ' + e.message);
+  }
+}
+
+function clearTournamentForm() {
+  ['t-name','t-city','t-date','t-score','t-place','t-flag'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ══ UPCOMING ══
+function addUpcoming() {
+  const name = document.getElementById('u-name').value.trim();
+  const city = document.getElementById('u-city').value.trim();
+  const date = document.getElementById('u-date').value.trim();
+  const status = document.getElementById('u-status').value;
+  if (!name || !date) return showStatus('u-status-msg', 'error', 'Заполни название и дату');
+  if (!tournamentData.upcoming) tournamentData.upcoming = [];
+  tournamentData.upcoming.push({ name, city, date, status });
+  renderUpcomingList(tournamentData.upcoming);
+  ['u-name','u-city','u-date'].forEach(id => document.getElementById(id).value = '');
+  showStatus('u-status-msg', 'success', '✓ Добавлено. Нажми "Сохранить на сайт".');
+}
+
+function deleteUpcoming(i) {
+  if (!confirm('Удалить?')) return;
+  tournamentData.upcoming.splice(i, 1);
+  renderUpcomingList(tournamentData.upcoming);
+}
+
+async function saveUpcoming() {
+  showStatus('ulist-status', 'loading', '⏳ Сохраняю...');
+  try {
+    const data = { ...tournamentData };
+    const sha = data._sha;
+    delete data._sha;
+    const result = await putFile(DATA_FILE, JSON.stringify(data, null, 2), 'Обновление предстоящих турниров', sha);
+    tournamentData._sha = result.content.sha;
+    showStatus('ulist-status', 'success', '✓ Сохранено!');
+  } catch(e) {
+    showStatus('ulist-status', 'error', '✕ ' + e.message);
+  }
+}
+
+// ══ RATINGS ══
+async function saveRatings() {
+  showStatus('r-status', 'loading', '⏳ Сохраняю рейтинги...');
+  try {
+    if (!tournamentData.kpis) tournamentData.kpis = {};
+    tournamentData.kpis.fide = document.getElementById('r-fide').value;
+    tournamentData.kpis.cfc = document.getElementById('r-cfc').value;
+    tournamentData.kpis.fqe = document.getElementById('r-fqe').value;
+    const data = { ...tournamentData };
+    const sha = data._sha;
+    delete data._sha;
+    const result = await putFile(DATA_FILE, JSON.stringify(data, null, 2), 'Обновление рейтингов', sha);
+    tournamentData._sha = result.content.sha;
+    renderAll();
+    showStatus('r-status', 'success', '✓ Рейтинги сохранены!');
+  } catch(e) {
+    showStatus('r-status', 'error', '✕ ' + e.message);
+  }
+}
+
+// ══ ABOUT ══
+async function saveAbout() {
+  showStatus('about-status', 'loading', '⏳ Сохраняю...');
+  try {
+    aboutData.bio = document.getElementById('about-text').value;
+    aboutData.motto = document.getElementById('about-motto').value;
+    const sha = aboutData._sha;
+    const data = { bio: aboutData.bio, motto: aboutData.motto };
+    const result = await putFile(ABOUT_FILE, JSON.stringify(data, null, 2), 'Обновление биографии', sha);
+    aboutData._sha = result.content.sha;
+    showStatus('about-status', 'success', '✓ Сохранено!');
+  } catch(e) {
+    showStatus('about-status', 'error', '✕ ' + e.message);
+  }
+}
+
+// ══ PHOTOS ══
+function handlePhotoSelect(event) {
+  const files = Array.from(event.target.files);
+  files.forEach(file => uploadPhoto(file));
+}
+
+async function uploadPhoto(file) {
+  const preview = document.getElementById('photo-upload-preview');
+  const thumb = document.createElement('div');
+  thumb.className = 'photo-thumb';
+  thumb.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--gold);font-size:1.5rem">⏳</div>`;
+  preview.appendChild(thumb);
+
+  try {
+    const base64 = await fileToBase64(file);
+    const path = `assets/photos/${Date.now()}_${file.name.replace(/[^a-z0-9.]/gi, '_')}`;
+    await putBinaryFile(path, base64.split(',')[1], 'Загрузка фото через admin panel', null);
+    thumb.innerHTML = `<img src="${base64}"><button class="photo-thumb-del">✕</button>`;
+    showStatus('photo-status', 'success', `✓ ${file.name} загружен!`);
+  } catch(e) {
+    thumb.innerHTML = `<div style="color:#e74c3c;font-size:0.7rem;padding:0.5rem;text-align:center">Ошибка</div>`;
+    showStatus('photo-status', 'error', '✕ ' + e.message);
+  }
+}
+
+async function uploadMainPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  showStatus('main-photo-status', 'loading', '⏳ Загружаю...');
+  try {
+    const base64 = await fileToBase64(file);
+    const existing = await getFile('kirill.jpg');
+    await putBinaryFile('kirill.jpg', base64.split(',')[1], 'Обновление главного фото', existing?.sha);
+    showStatus('main-photo-status', 'success', '✓ Фото обновлено! Сайт обновится через ~1 минуту.');
+  } catch(e) {
+    showStatus('main-photo-status', 'error', '✕ ' + e.message);
+  }
+}
+
+function fileToBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ══ UTILS ══
+function showStatus(id, type, msg) {
+  const el = document.getElementById(id);
+  el.className = 'status-msg ' + type;
+  el.style.display = 'block';
+  el.textContent = msg;
+  if (type === 'success') setTimeout(() => el.style.display = 'none', 4000);
+}
+</script>
+</body>
+</html>
