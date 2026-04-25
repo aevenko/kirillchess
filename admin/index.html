@@ -818,6 +818,7 @@
 // ══ CONFIG ══
 const REPO = 'aevenko/kirillchess';
 const DATA_FILE = 'data/tournaments.json';
+const RATINGS_FILE = 'data/ratings.json';
 const ABOUT_FILE = 'data/about.json';
 
 let TOKEN = '';
@@ -954,6 +955,17 @@ async function loadAllData() {
       tournamentData = { kpis: { fide: '', cfc: '', fqe: '' }, played: [], upcoming: [] };
     }
 
+    // Load ratings.json
+    const rf = await getFile(RATINGS_FILE);
+    if (rf) {
+      const raw = decodeURIComponent(escape(atob(rf.content.replace(/
+/g,''))));
+      ratingsData = JSON.parse(raw);
+      ratingsData._sha = rf.sha;
+    } else {
+      ratingsData = { fide: { standard: '' }, cfc: { regular: '' }, fqe: { lente: '' }, updated_at: '' };
+    }
+
     // Load about
     const af = await getFile(ABOUT_FILE);
     if (af) {
@@ -984,12 +996,15 @@ function renderAll() {
   document.getElementById('stat-wins').textContent = wins;
 
   // Ratings display
-  document.getElementById('display-fide').textContent = kpis.fide || '—';
-  document.getElementById('display-cfc').textContent = kpis.cfc || '—';
-  document.getElementById('display-fqe').textContent = kpis.fqe || '—';
-  document.getElementById('r-fide').value = kpis.fide || '';
-  document.getElementById('r-cfc').value = kpis.cfc || '';
-  document.getElementById('r-fqe').value = kpis.fqe || '';
+  const rfide = ratingsData.fide?.standard || '';
+  const rcfc  = ratingsData.cfc?.regular  || '';
+  const rfqe  = ratingsData.fqe?.lente    || '';
+  document.getElementById('display-fide').textContent = rfide || '—';
+  document.getElementById('display-cfc').textContent  = rcfc  || '—';
+  document.getElementById('display-fqe').textContent  = rfqe  || '—';
+  document.getElementById('r-fide').value = rfide;
+  document.getElementById('r-cfc').value  = rcfc;
+  document.getElementById('r-fqe').value  = rfqe;
 
   // Recent list (dashboard)
   const recent = played.slice(0, 4);
@@ -1128,17 +1143,17 @@ async function saveUpcoming() {
 async function saveRatings() {
   showStatus('r-status', 'loading', '⏳ Сохраняю рейтинги...');
   try {
-    if (!tournamentData.kpis) tournamentData.kpis = {};
-    tournamentData.kpis.fide = document.getElementById('r-fide').value;
-    tournamentData.kpis.cfc = document.getElementById('r-cfc').value;
-    tournamentData.kpis.fqe = document.getElementById('r-fqe').value;
-    const data = { ...tournamentData };
-    const sha = data._sha;
+    const sha = ratingsData._sha;
+    ratingsData.fide = { ...ratingsData.fide, standard: parseInt(document.getElementById('r-fide').value) || null };
+    ratingsData.cfc  = { ...ratingsData.cfc,  regular:  parseInt(document.getElementById('r-cfc').value)  || null };
+    ratingsData.fqe  = { ...ratingsData.fqe,  lente:    parseInt(document.getElementById('r-fqe').value)  || null };
+    ratingsData.updated_at = new Date().toISOString().split('T')[0];
+    const data = { ...ratingsData };
     delete data._sha;
-    const result = await putFile(DATA_FILE, JSON.stringify(data, null, 2), 'Обновление рейтингов', sha);
-    tournamentData._sha = result.content.sha;
+    const result = await putFile(RATINGS_FILE, JSON.stringify(data, null, 2), 'Обновление рейтингов', sha);
+    ratingsData._sha = result.content.sha;
     renderAll();
-    showStatus('r-status', 'success', '✓ Рейтинги сохранены!');
+    showStatus('r-status', 'success', '✓ Рейтинги сохранены! Сайт обновится через ~1 минуту.');
   } catch(e) {
     showStatus('r-status', 'error', '✕ ' + e.message);
   }
