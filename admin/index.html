@@ -6,19 +6,23 @@
 <title>KirillChess — Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0f0d0b;--sur:#1a1612;--sur2:#221e19;--bor:rgba(201,168,76,0.15);--gold:#c9a84c;--cream:#f5f0e8;--text:#e8e0d0;--muted:#6b5d4f;--inp:#110f0c;}
+:root{--bg:#f4f1eb;--sur:#ffffff;--sur2:#f9f6f0;--bor:rgba(0,0,0,0.08);--gold:#b8860b;--gold-light:#c9a84c;--cream:#1a1612;--text:#2c2420;--muted:#7a6a5a;--inp:#faf8f4;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:
+  linear-gradient(135deg,rgba(201,168,76,0.04) 0%,transparent 50%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='40' height='40' fill='rgba(181,136,99,0.06)'/%3E%3Crect x='40' width='40' height='40' fill='rgba(240,217,181,0.04)'/%3E%3Crect y='40' width='40' height='40' fill='rgba(240,217,181,0.04)'/%3E%3Crect x='40' y='40' width='40' height='40' fill='rgba(181,136,99,0.06)'/%3E%3C/svg%3E");
+  pointer-events:none;}
 
 /* LOGIN */
 #login{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2rem;}
-.login-logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--cream);}
+.login-logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#1a1612;}
 .login-logo span{color:var(--gold);}
 .login-card{background:var(--sur);border:1px solid var(--bor);border-radius:8px;padding:2.5rem;width:380px;display:flex;flex-direction:column;gap:1.2rem;}
 .login-card h2{font-family:'Playfair Display',serif;font-size:1.4rem;}
 .lbl{font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem;}
-.inp{width:100%;background:var(--inp);border:1px solid var(--bor);border-radius:4px;padding:0.75rem 1rem;color:var(--text);font-family:'DM Mono',monospace;font-size:0.85rem;outline:none;transition:border-color 0.2s;}
-.inp:focus{border-color:var(--gold);}
+.inp{width:100%;background:#faf8f4;border:1px solid rgba(0,0,0,0.12);border-radius:4px;padding:0.75rem 1rem;color:#2c2420;font-family:'DM Mono',monospace;font-size:0.85rem;outline:none;transition:border-color 0.2s;}
+.inp:focus{border-color:#b8860b;box-shadow:0 0 0 3px rgba(184,134,11,0.1);}
 .inp::placeholder{color:var(--muted);}
 .hint{font-size:0.75rem;color:var(--muted);line-height:1.5;}
 .hint a{color:var(--gold);text-decoration:none;}
@@ -29,18 +33,18 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 
 /* APP */
 #app{display:none;}
-.topbar{background:var(--sur);border-bottom:1px solid var(--bor);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-.topbar-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;}
+.topbar{background:#fff;border-bottom:1px solid rgba(0,0,0,0.1);box-shadow:0 1px 8px rgba(0,0,0,0.06);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.topbar-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:#1a1612;}
 .topbar-logo span{color:var(--gold);}
 .btn-sm{background:transparent;border:1px solid var(--bor);color:var(--muted);border-radius:4px;padding:0.4rem 0.9rem;font-size:0.75rem;font-family:'DM Mono',monospace;cursor:pointer;transition:all 0.2s;}
 .btn-sm:hover{border-color:var(--gold);color:var(--gold);}
 
 .layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px);}
-.sidebar{background:var(--sur);border-right:1px solid var(--bor);padding:1.5rem 0;}
+.sidebar{background:#fff;border-right:1px solid rgba(0,0,0,0.08);padding:1.5rem 0;box-shadow:2px 0 8px rgba(0,0,0,0.04);}
 .sidebar-sec{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);padding:0 1.2rem;margin:1.2rem 0 0.5rem;}
 .nav-item{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 1.2rem;color:var(--muted);cursor:pointer;font-size:0.88rem;transition:all 0.15s;border-left:2px solid transparent;}
 .nav-item:hover{color:var(--text);background:var(--sur2);}
-.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,168,76,0.05);}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:rgba(184,134,11,0.08);}
 
 .main{padding:2rem;overflow-y:auto;}
 .panel{display:none;}
@@ -48,7 +52,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .page-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;margin-bottom:0.3rem;}
 .page-sub{font-size:0.85rem;color:var(--muted);margin-bottom:2rem;font-family:'DM Mono',monospace;}
 
-.card{background:var(--sur);border:1px solid var(--bor);border-radius:6px;padding:1.5rem;margin-bottom:1.5rem;}
+.card{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
 .card-title{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;}
 
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
@@ -74,20 +78,20 @@ textarea.inp{resize:vertical;min-height:100px;line-height:1.5;}
 
 /* Ratings display */
 .ratings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;}
-.r-card{background:var(--sur2);border:1px solid var(--bor);border-radius:6px;padding:1.2rem;text-align:center;}
-.r-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--gold);display:block;line-height:1;}
-.r-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:0.4rem;}
+.r-card{background:linear-gradient(135deg,#2c1f0e,#1a1612);border:none;border-radius:8px;padding:1.5rem;text-align:center;}
+.r-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:#c9a84c;display:block;line-height:1;}
+.r-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(245,240,232,0.5);margin-top:0.4rem;}
 
 /* Tournament list */
 .t-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem;}
-.t-item{background:var(--sur2);border:1px solid var(--bor);border-radius:4px;padding:0.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.t-item{background:#faf8f4;border:1px solid rgba(0,0,0,0.07);border-radius:6px;padding:0.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transition:border-color 0.2s;}
 .t-name{font-size:0.88rem;font-weight:500;}
 .t-meta{font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:0.2rem;}
 .t-score{font-family:'DM Mono',monospace;font-size:0.8rem;color:var(--gold);white-space:nowrap;}
 
 /* Stats */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
-.stat-box{background:var(--sur);border:1px solid var(--bor);border-radius:6px;padding:1.2rem;text-align:center;}
+.stat-box{background:#fff;border:1px solid rgba(0,0,0,0.07);border-radius:8px;padding:1.2rem;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.04);}
 .stat-num{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:var(--gold);display:block;}
 .stat-lbl{font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem;}
 
@@ -109,8 +113,8 @@ textarea.inp{resize:vertical;min-height:100px;line-height:1.5;}
 <!-- LOGIN -->
 <div id="login">
   <div class="login-logo">Kirill<span>Chess</span></div>
-  <div class="login-card">
-    <h2>Панель администратора</h2>
+  <div class="login-card" style="background:#fff;box-shadow:0 8px 40px rgba(0,0,0,0.1);">
+    <h2 style="color:#1a1612;">Панель администратора</h2>
     <div class="form-group">
       <div class="lbl">Email</div>
       <input type="email" class="inp" id="login-email" placeholder="your@email.com">
