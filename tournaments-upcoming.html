@@ -1,46 +1,182 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Предстоящие турниры — Kirill Chess</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <style>
-    body{font-family:"Inter",sans-serif; color:#e9eef6; margin:0; padding:20px;}
-    h1{font-size:28px; margin-bottom:20px;}
-    table{width:100%; border-collapse:collapse; background:#121620ee; border-radius:12px; overflow:hidden;}
-    th,td{padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.1); text-align:left;}
-    th{background:rgba(255,255,255,0.08);}
-    tr:hover{background:rgba(255,255,255,0.05);}
-    footer{margin-top:20px; font-size:12px; color:#b9c2d3; text-align:center;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Предстоящие турниры — KirillChess</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--cream:#f5f0e8;--dark:#1a1612;--brown:#2c1f0e;--gold:#c9a84c;--gold-light:#e8cc7a;--muted:#6b5d4f;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--dark);font-family:'DM Sans',sans-serif;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(245,240,232,0.93);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,0.2);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--dark);text-decoration:none;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:1.8rem;list-style:none;}
+.nav-links a{text-decoration:none;color:var(--muted);font-size:0.82rem;font-weight:500;letter-spacing:0.07em;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--dark);border-radius:2px;}
+
+.page-hero{background:var(--dark);padding:8rem 4rem 4rem;position:relative;overflow:hidden;}
+.page-hero::before{content:'◷';position:absolute;font-size:28rem;color:rgba(201,168,76,0.04);right:-2rem;top:-2rem;line-height:1;pointer-events:none;}
+.page-hero-eyebrow{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:0.75rem;}
+.page-hero-eyebrow::before{content:'';display:block;width:2rem;height:1px;background:var(--gold);}
+.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.5rem);font-weight:900;color:var(--cream);}
+.page-hero p{color:rgba(245,240,232,0.5);font-size:0.9rem;margin-top:0.8rem;font-family:'DM Mono',monospace;}
+
+.board-strip{display:flex;height:8px;}
+.board-strip div{flex:1;}
+.board-strip div:nth-child(odd){background:#b58863;}
+.board-strip div:nth-child(even){background:#f0d9b5;}
+
+.content{padding:3rem 4rem;}
+
+/* Timeline style */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),rgba(201,168,76,0.1));}
+.tl-item{position:relative;margin-bottom:1.5rem;}
+.tl-item::before{content:'';position:absolute;left:-2.4rem;top:1.5rem;width:10px;height:10px;border-radius:50%;background:var(--gold);border:2px solid var(--cream);box-shadow:0 0 0 2px var(--gold);}
+.tl-card{background:white;border:1.5px solid rgba(201,168,76,0.15);border-radius:8px;padding:1.5rem;transition:all 0.2s;}
+.tl-card:hover{border-color:var(--gold);transform:translateX(4px);box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+.tl-date{font-family:'DM Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;}
+.tl-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:0.3rem;}
+.tl-address{font-size:0.82rem;color:var(--muted);margin-top:0.3rem;display:flex;align-items:flex-start;gap:0.4rem;}
+.tl-address::before{content:'📍';font-size:0.8rem;flex-shrink:0;}
+.tl-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:0.65rem;padding:0.2rem 0.6rem;border-radius:10px;margin-top:0.6rem;}
+.tl-badge.confirmed{background:rgba(39,174,96,0.1);color:#27ae60;}
+.tl-badge.tbc{background:rgba(201,168,76,0.1);color:var(--gold);}
+.tl-badge.major{background:rgba(192,57,43,0.1);color:#c0392b;}
+
+.section-label{font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin:2.5rem 0 1.5rem;display:flex;align-items:center;gap:1rem;}
+.section-label::after{content:'';flex:1;height:1px;background:rgba(0,0,0,0.08);}
+
+footer{background:var(--brown);color:rgba(245,240,232,0.4);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace;font-size:0.72rem;flex-wrap:wrap;gap:1rem;}
+footer a{color:rgba(245,240,232,0.4);text-decoration:none;}
+footer a:hover{color:var(--gold);}
+.footer-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;color:var(--cream);}
+.footer-logo span{color:var(--gold);}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;background:var(--cream);flex-direction:column;padding:1.5rem;gap:0;border-bottom:1px solid rgba(201,168,76,0.2);}
+  .nav-links.open{display:flex;}
+  .nav-links li a{display:block;padding:0.8rem 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+  .nav-burger{display:flex;}
+  .page-hero{padding:6rem 1.5rem 2.5rem;}
+  .content{padding:2rem 1rem;}
+  footer{padding:1.5rem;flex-direction:column;text-align:center;}
+}
+</style>
 </head>
 <body>
-  <h1>Предстоящие турниры</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Дата</th>
-        <th>Турнир</th>
-        <th>Место проведения</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>3–7 septembre</td><td>Montréal Open 2025</td><td>505 Rue Jean-Talon E, Montréal, QC H2R 1T6</td></tr>
-      <tr><td>17–19 octobre</td><td>Championnat d'échecs du Haut-Richelieu</td><td>15 Rue Jacques-Cartier N, Saint-Jean-sur-Richelieu, QC J3B 8R8</td></tr>
-      <tr><td>9 novembre</td><td>Grand Prix Régulier (CAM)</td><td>À confirmer</td></tr>
-      <tr><td>14 décembre</td><td>Tournoi Régulier de la Rive-Sud (CAM)</td><td>3055, Boul. de Rome, Brossard</td></tr>
-      <tr><td>8 février</td><td>Tournois de qualification (CAM)</td><td>À confirmer</td></tr>
-      <tr><td>10–12 avril</td><td>Tournois de Germain Laplante</td><td>1625 boul. de Périgny, Chambly, J3L 1X1</td></tr>
-      <tr><td>26 avril</td><td>Défi Échiquéen du Québec (CAM)</td><td>Sheraton Laval</td></tr>
-      <tr><td>6–10 juillet</td><td>CYCC 2026</td><td>Ottawa</td></tr>
-    </tbody>
-  </table>
-  <footer>
-    © <span id="y"></span> Kirill Evenko
-  </footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+<nav>
+  <a href="index.html" class="nav-logo">Kirill<span>Chess</span></a>
+  <ul class="nav-links" id="nav-menu">
+    <li><a href="index.html">Главная</a></li>
+    <li><a href="games.html">Партии</a></li>
+    <li><a href="tournaments-played.html">Результаты</a></li>
+    <li><a href="tournaments-upcoming.html" class="active">Предстоящие</a></li>
+    <li><a href="contact.html">Контакты</a></li>
+  </ul>
+  <button class="nav-burger" onclick="document.getElementById('nav-menu').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page-hero">
+  <div class="page-hero-eyebrow">Расписание</div>
+  <h1>Предстоящие<br>турниры</h1>
+  <p>8 турниров запланировано · 2025–2026</p>
+</div>
+<div class="board-strip" id="bs"></div>
+
+<div class="content">
+  <div class="section-label">Осень 2025</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">3–7 сентября 2025</div>
+        <div class="tl-name">Montréal Open 2025</div>
+        <div class="tl-address">505 Rue Jean-Talon E, Montréal, QC H2R 1T6</div>
+        <span class="tl-badge confirmed">Подтверждено</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">17–19 октября 2025</div>
+        <div class="tl-name">Championnat d'échecs du Haut-Richelieu</div>
+        <div class="tl-address">15 Rue Jacques-Cartier N, Saint-Jean-sur-Richelieu, QC J3B 8R8</div>
+        <span class="tl-badge confirmed">Подтверждено</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">9 ноября 2025</div>
+        <div class="tl-name">Grand Prix Régulier (CAM)</div>
+        <div class="tl-address">À confirmer</div>
+        <span class="tl-badge tbc">Уточняется</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">14 декабря 2025</div>
+        <div class="tl-name">Tournoi Régulier de la Rive-Sud (CAM)</div>
+        <div class="tl-address">3055, Boul. de Rome, Brossard</div>
+        <span class="tl-badge confirmed">Подтверждено</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Зима — Весна 2026</div>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">8 февраля 2026</div>
+        <div class="tl-name">Tournois de qualification (CAM)</div>
+        <div class="tl-address">À confirmer</div>
+        <span class="tl-badge tbc">Уточняется</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">10–12 апреля 2026</div>
+        <div class="tl-name">Tournois de Germain Laplante</div>
+        <div class="tl-address">1625 boul. de Périgny, Chambly, J3L 1X1</div>
+        <span class="tl-badge confirmed">Подтверждено</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card">
+        <div class="tl-date">26 апреля 2026</div>
+        <div class="tl-name">Défi Échiquéen du Québec (CAM)</div>
+        <div class="tl-address">Sheraton Laval</div>
+        <span class="tl-badge confirmed">Подтверждено</span>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-card" style="border-color:rgba(192,57,43,0.25);">
+        <div class="tl-date">6–10 июля 2026</div>
+        <div class="tl-name">CYCC 2026 — Canadian Youth Chess Championship</div>
+        <div class="tl-address">Ottawa</div>
+        <span class="tl-badge major">🏆 Главный турнир года</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">Kirill<span>Chess</span>.com</div>
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;">
+    <a href="index.html">Главная</a>
+    <a href="tournaments-played.html">Результаты</a>
+    <a href="contact.html">Контакты</a>
+  </div>
+  <div>© Kirill Evenko</div>
+</footer>
+<script>
+const bs=document.getElementById('bs');
+for(let i=0;i<16;i++)bs.appendChild(document.createElement('div'));
+</script>
 </body>
 </html>
