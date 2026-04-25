@@ -169,15 +169,15 @@ footer{background:var(--brown);color:var(--cream);padding:3rem 4rem;display:flex
     <div class="hero-eyebrow">Юный шахматист · Квебек, Канада</div>
     <h1 class="hero-name">Кирилл<span class="gold">Евенко</span></h1>
     <p class="hero-desc">Открыл шахматы в 5 лет. Сегодня — регулярные выступления на канадских и международных турнирах. Цель — стать гроссмейстером.</p>
-    <div class="ratings-row">
+    <div class="ratings-row" id="ratings-row">
       <a href="https://ratings.fide.com/profile/2666243" target="_blank" class="rating-pill">
-        <span class="rating-num">1787</span><span class="rating-lbl">FIDE</span>
+        <span class="rating-num" id="r-fide">—</span><span class="rating-lbl">FIDE</span>
       </a>
       <a href="https://www.chess.ca/en/ratings/p/?id=187189" target="_blank" class="rating-pill">
-        <span class="rating-num">1526</span><span class="rating-lbl">CFC</span>
+        <span class="rating-num" id="r-cfc">—</span><span class="rating-lbl">CFC</span>
       </a>
       <a href="https://www.fqechecs.qc.ca/membres/index.php?Id=109477" target="_blank" class="rating-pill">
-        <span class="rating-num">1524</span><span class="rating-lbl">FQE</span>
+        <span class="rating-num" id="r-fqe">—</span><span class="rating-lbl">FQE</span>
       </a>
     </div>
     <div class="hero-btns">
@@ -296,6 +296,23 @@ if(cb) pieces.forEach((p,i)=>{
 function toggleMenu(){
   document.getElementById('nav-menu').classList.toggle('open');
 }
+
+// Load ratings from data/ratings.json
+fetch('data/ratings.json')
+  .then(r => r.json())
+  .then(data => {
+    const fide = data.fide?.standard || data.fide?.rapid || '—';
+    const cfc  = data.cfc?.regular  || data.cfc?.quick  || '—';
+    const fqe  = data.fqe?.lente    || data.fqe?.semi_rapide || '—';
+    document.getElementById('r-fide').textContent = fide;
+    document.getElementById('r-cfc').textContent  = cfc;
+    document.getElementById('r-fqe').textContent  = fqe;
+  })
+  .catch(() => {
+    document.getElementById('r-fide').textContent = '1721';
+    document.getElementById('r-cfc').textContent  = '—';
+    document.getElementById('r-fqe').textContent  = '1644';
+  });
 </script>
 
 
