@@ -298,15 +298,12 @@ function toggleMenu(){
 }
 
 // Load ratings from data/ratings.json
-fetch('data/ratings.json')
+fetch('data/ratings.json?v=' + Date.now())
   .then(r => r.json())
   .then(data => {
-    const fide = data.fide?.standard || data.fide?.rapid || '—';
-    const cfc  = data.cfc?.regular  || data.cfc?.quick  || '—';
-    const fqe  = data.fqe?.lente    || data.fqe?.semi_rapide || '—';
-    document.getElementById('r-fide').textContent = fide;
-    document.getElementById('r-cfc').textContent  = cfc;
-    document.getElementById('r-fqe').textContent  = fqe;
+    document.getElementById('r-fide').textContent = data.fide?.standard || '—';
+    document.getElementById('r-cfc').textContent  = data.cfc?.regular   || '—';
+    document.getElementById('r-fqe').textContent  = data.fqe?.lente     || '—';
   })
   .catch(() => {
     document.getElementById('r-fide').textContent = '1721';
